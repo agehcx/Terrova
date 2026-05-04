@@ -1,8 +1,16 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
+import { Card, CardContent } from "@/components/ui/card"
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
 import {
   ArrowRight,
   Terminal,
@@ -11,6 +19,14 @@ import {
   ExternalLink,
   Copy,
   Check,
+  ShieldCheck,
+  MapPin,
+  Zap,
+  Globe,
+  Coins,
+  Search,
+  Lock,
+  ChevronRight,
 } from "lucide-react"
 
 function SolanaLogo({ className }: { className?: string }) {
@@ -24,10 +40,10 @@ function SolanaLogo({ className }: { className?: string }) {
 }
 
 const networkStats = [
-  { value: "2,847", label: "Nodes", detail: "43 countries" },
-  { value: "156K", label: "Evidence", detail: "this month" },
-  { value: "99.2%", label: "Uptime", detail: "30d rolling" },
-  { value: "$4.2M", label: "Staked", detail: "in PROOF" },
+  { value: "2,847", label: "Active Nodes", detail: "43 countries" },
+  { value: "156K", label: "Proofs Verified", detail: "this month" },
+  { value: "99.2%", label: "Network Uptime", detail: "30d rolling" },
+  { value: "$4.2M", label: "TVL Staked", detail: "in PROOF" },
 ]
 
 const codeExample = `import { GeoProofClient } from '@geoproof/sdk'
@@ -53,6 +69,13 @@ verification.on('evidence', (evidence) => {
 export default function LandingPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [copied, setCopied] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
+
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 20)
+    window.addEventListener("scroll", handleScroll)
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [])
 
   const copyCode = () => {
     navigator.clipboard.writeText("npm install @geoproof/sdk")
@@ -61,358 +84,414 @@ export default function LandingPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="relative min-h-screen bg-background text-foreground selection:bg-primary/30">
+      {/* Background Ornaments */}
+      <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
+        <div className="grid-background absolute inset-0 opacity-20" />
+        <div className="radial-glow absolute -top-[10%] -left-[10%] h-[50%] w-[50%] rounded-full opacity-10" />
+        <div className="radial-glow absolute top-[20%] -right-[10%] h-[40%] w-[40%] rounded-full opacity-5" />
+      </div>
+
       {/* Nav */}
-      <nav className="fixed top-0 left-0 right-0 z-50 border-b border-border/40 bg-background/95 backdrop-blur-sm">
-        <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4">
-          <Link href="/" className="flex items-center gap-2 font-semibold">
-            <div className="flex h-7 w-7 items-center justify-center rounded bg-primary text-primary-foreground">
-              <span className="text-sm font-bold">G</span>
+      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? "border-b border-border/40 bg-background/80 backdrop-blur-xl py-2" : "bg-transparent py-4"}`}>
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-6">
+          <Link href="/" className="flex items-center gap-2.5 group">
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-primary-foreground shadow-[0_0_20px_rgba(var(--primary),0.3)] group-hover:scale-105 transition-transform">
+              <span className="text-lg font-bold">G</span>
             </div>
-            <span>GeoProof</span>
+            <span className="text-xl font-bold tracking-tight">GeoProof</span>
           </Link>
 
-          <div className="hidden items-center gap-6 md:flex">
-            <a href="https://geoproof.gitbook.io/geoproof-docs/documentation" target="_blank" rel="noopener noreferrer" className="text-sm text-muted-foreground hover:text-foreground">
-              Docs
+          <div className="hidden items-center gap-8 md:flex">
+            <a href="https://geoproof.gitbook.io/geoproof-docs/documentation" target="_blank" rel="noopener noreferrer" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+              Documentation
             </a>
-            <Link href="/network" className="text-sm text-muted-foreground hover:text-foreground">
-              Network
+            <Link href="/dashboard" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+              Network Explorer
             </Link>
-            <a href="https://github.com/geoproof" className="text-sm text-muted-foreground hover:text-foreground">
+            <a href="https://github.com/geoproof" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
               GitHub
             </a>
+            <div className="h-4 w-px bg-border/60" />
             <Link href="/dashboard">
-              <Button size="sm" variant="outline">
-                Dashboard
+              <Button size="sm" className="font-semibold shadow-lg shadow-primary/20">
+                Launch Dashboard
               </Button>
             </Link>
           </div>
 
           <button className="md:hidden" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
-            {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
           </button>
         </div>
 
         {mobileMenuOpen && (
-          <div className="border-t border-border bg-background p-4 md:hidden">
-            <div className="flex flex-col gap-3">
-              <a href="https://geoproof.gitbook.io/geoproof-docs/documentation" target="_blank" rel="noopener noreferrer" className="text-sm">Docs</a>
-              <Link href="/network" className="text-sm">Network</Link>
-              <a href="https://github.com/geoproof" className="text-sm">GitHub</a>
+          <div className="absolute top-full left-0 right-0 border-t border-border bg-background/95 backdrop-blur-xl p-6 md:hidden animate-in slide-in-from-top-4 duration-200">
+            <div className="flex flex-col gap-5">
+              <a href="https://geoproof.gitbook.io/geoproof-docs/documentation" className="text-lg font-medium">Docs</a>
+              <Link href="/dashboard" className="text-lg font-medium">Network Explorer</Link>
+              <a href="https://github.com/geoproof" className="text-lg font-medium">GitHub</a>
               <Link href="/dashboard">
-                <Button size="sm" className="w-full">Dashboard</Button>
+                <Button className="w-full">Launch Dashboard</Button>
               </Link>
             </div>
           </div>
         )}
       </nav>
 
-      {/* Hero */}
-      <section className="pt-28 pb-16 md:pt-36 md:pb-24">
-        <div className="mx-auto max-w-6xl px-4">
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <span className="inline-flex h-5 items-center rounded bg-primary/10 px-2 text-xs font-medium text-primary">
-              v0.8.2
-            </span>
-            <span>Devnet live</span>
-            <span className="text-muted-foreground/50">|</span>
-            <span>Mainnet Q2 2026</span>
-          </div>
+      <main className="relative z-10">
+        {/* Hero Section */}
+        <section className="relative pt-32 pb-20 md:pt-48 md:pb-32 overflow-hidden">
+          <div className="mx-auto max-w-7xl px-6 text-center">
+            <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 text-sm font-medium text-primary animate-in fade-in slide-in-from-bottom-2 duration-700">
+              <Badge variant="secondary" className="bg-primary/10 text-primary border-none text-[10px] h-5">NEW</Badge>
+              <span>Mainnet Launching Q2 2026</span>
+              <ChevronRight className="h-3.5 w-3.5" />
+            </div>
 
-          <h1 className="mt-6 max-w-2xl text-3xl font-semibold tracking-tight md:text-4xl lg:text-5xl">
-            Decentralized verification for agricultural insurance claims
-          </h1>
+            <h1 className="mt-8 text-4xl font-extrabold tracking-tight md:text-6xl lg:text-7xl">
+              Verification layer for <br className="hidden md:block" />
+              <span className="bg-gradient-to-r from-primary via-emerald-400 to-primary bg-clip-text text-transparent">
+                Agricultural Insurance
+              </span>
+            </h1>
 
-          <p className="mt-4 max-w-xl text-muted-foreground md:text-lg">
-            GeoProof coordinates a network of node operators to collect geospatial evidence.
-            Consensus-based verification enables trustless, automated claim resolution on Solana.
-          </p>
+            <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground md:text-xl leading-relaxed">
+              GeoProof is a decentralized DePIN network on Solana that enables trustless verification of crop damage through cryptographically-secured geospatial evidence.
+            </p>
 
-          <div className="mt-8 flex flex-wrap items-center gap-3">
-            <Link href="/dashboard">
-              <Button className="gap-2">
-                Open Dashboard
-                <ArrowRight className="h-4 w-4" />
+            <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
+              <Link href="/dashboard">
+                <Button size="lg" className="h-12 px-8 text-base font-bold shadow-xl shadow-primary/25 group">
+                  Get Started
+                  <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                </Button>
+              </Link>
+              <Button variant="outline" size="lg" className="h-12 px-8 text-base font-semibold group" onClick={copyCode}>
+                <Terminal className="mr-2 h-4 w-4 text-primary" />
+                <span>npm i @geoproof/sdk</span>
+                {copied ? (
+                  <Check className="ml-2 h-4 w-4 text-green-500" />
+                ) : (
+                  <Copy className="ml-2 h-4 w-4 text-muted-foreground group-hover:text-foreground transition-colors" />
+                )}
               </Button>
-            </Link>
-            <Button variant="outline" className="gap-2" onClick={copyCode}>
-              <Terminal className="h-4 w-4" />
-              npm install @geoproof/sdk
-              {copied ? (
-                <Check className="h-3 w-3 text-green-500" />
-              ) : (
-                <Copy className="h-3 w-3 text-muted-foreground" />
-              )}
-            </Button>
-          </div>
-
-          {/* Stats row */}
-          <div className="mt-16 grid grid-cols-2 gap-px overflow-hidden rounded-lg border border-border bg-border md:grid-cols-4">
-            {networkStats.map((stat) => (
-              <div key={stat.label} className="bg-card p-4 md:p-6">
-                <div className="text-2xl font-semibold text-foreground md:text-3xl">{stat.value}</div>
-                <div className="mt-1 text-sm text-muted-foreground">
-                  {stat.label} <span className="text-muted-foreground/60">/ {stat.detail}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Code example */}
-      <section className="border-t border-border bg-card/30 py-16 md:py-24">
-        <div className="mx-auto max-w-6xl px-4">
-          <div className="grid gap-12 lg:grid-cols-2 lg:gap-16">
-            <div>
-              <h2 className="text-2xl font-semibold tracking-tight md:text-3xl">
-                Built for developers
-              </h2>
-              <p className="mt-4 text-muted-foreground">
-                The GeoProof SDK provides a simple interface to request verifications,
-                monitor evidence collection, and integrate claim resolution into your workflow.
-              </p>
-
-              <div className="mt-8 relative flex flex-col gap-8 pl-6 before:absolute before:inset-y-0 before:left-[35px] before:w-px before:bg-gradient-to-b before:from-primary/50 before:via-primary/20 before:to-transparent">
-                <div className="relative flex items-start gap-6 group">
-                  <div className="relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-background border-2 border-primary/30 shadow-[0_0_15px_rgba(var(--primary),0.15)] text-sm font-bold text-primary transition-all duration-300 group-hover:scale-110 group-hover:border-primary group-hover:shadow-[0_0_20px_rgba(var(--primary),0.3)] group-hover:bg-primary/5">1</div>
-                  <div className="rounded-xl border border-border/50 bg-card/40 backdrop-blur-sm p-5 transition-all duration-300 group-hover:-translate-y-1 group-hover:bg-card group-hover:shadow-lg group-hover:border-primary/30 w-full relative overflow-hidden">
-                    <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
-                    <div className="font-semibold text-foreground text-lg group-hover:text-primary transition-colors">Create Verification Request</div>
-                    <div className="mt-1.5 text-sm text-muted-foreground leading-relaxed">Specify claim location, geographic radius, date window, and the USDC bounty reward to initiate the verification process.</div>
-                  </div>
-                </div>
-
-                <div className="relative flex items-start gap-6 group">
-                  <div className="relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-background border-2 border-primary/30 shadow-[0_0_15px_rgba(var(--primary),0.15)] text-sm font-bold text-primary transition-all duration-300 group-hover:scale-110 group-hover:border-primary group-hover:shadow-[0_0_20px_rgba(var(--primary),0.3)] group-hover:bg-primary/5">2</div>
-                  <div className="rounded-xl border border-border/50 bg-card/40 backdrop-blur-sm p-5 transition-all duration-300 group-hover:-translate-y-1 group-hover:bg-card group-hover:shadow-lg group-hover:border-primary/30 w-full relative overflow-hidden">
-                    <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
-                    <div className="font-semibold text-foreground text-lg group-hover:text-primary transition-colors">Job Broadcasting & Routing</div>
-                    <div className="mt-1.5 text-sm text-muted-foreground leading-relaxed">The protocol automatically routes your request to the most qualified and reputable active nodes operating within the target geographic region.</div>
-                  </div>
-                </div>
-
-                <div className="relative flex items-start gap-6 group">
-                  <div className="relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-background border-2 border-primary/30 shadow-[0_0_15px_rgba(var(--primary),0.15)] text-sm font-bold text-primary transition-all duration-300 group-hover:scale-110 group-hover:border-primary group-hover:shadow-[0_0_20px_rgba(var(--primary),0.3)] group-hover:bg-primary/5">3</div>
-                  <div className="rounded-xl border border-border/50 bg-card/40 backdrop-blur-sm p-5 transition-all duration-300 group-hover:-translate-y-1 group-hover:bg-card group-hover:shadow-lg group-hover:border-primary/30 w-full relative overflow-hidden">
-                    <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
-                    <div className="font-semibold text-foreground text-lg group-hover:text-primary transition-colors">Evidence Collection</div>
-                    <div className="mt-1.5 text-sm text-muted-foreground leading-relaxed">Operators deploy to the field and capture verifiable, geotagged evidence secured by cryptographic signatures preventing location spoofing.</div>
-                  </div>
-                </div>
-
-                <div className="relative flex items-start gap-6 group">
-                  <div className="relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-background border-2 border-primary/30 shadow-[0_0_15px_rgba(var(--primary),0.15)] text-sm font-bold text-primary transition-all duration-300 group-hover:scale-110 group-hover:border-primary group-hover:shadow-[0_0_20px_rgba(var(--primary),0.3)] group-hover:bg-primary/5">4</div>
-                  <div className="rounded-xl border border-border/50 bg-card/40 backdrop-blur-sm p-5 transition-all duration-300 group-hover:-translate-y-1 group-hover:bg-card group-hover:shadow-lg group-hover:border-primary/30 w-full relative overflow-hidden">
-                    <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
-                    <div className="font-semibold text-foreground text-lg group-hover:text-primary transition-colors">Consensus & Confidence Scoring</div>
-                    <div className="mt-1.5 text-sm text-muted-foreground leading-relaxed">The network analyzes the aggregated evidence, reaches consensus through on-chain voting, and calculates a final confidence score for the claim.</div>
-                  </div>
-                </div>
-
-                <div className="relative flex items-start gap-6 group">
-                  <div className="relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-background border-2 border-primary/30 shadow-[0_0_15px_rgba(var(--primary),0.15)] text-sm font-bold text-primary transition-all duration-300 group-hover:scale-110 group-hover:border-primary group-hover:shadow-[0_0_20px_rgba(var(--primary),0.3)] group-hover:bg-primary/5">5</div>
-                  <div className="rounded-xl border border-border/50 bg-card/40 backdrop-blur-sm p-5 transition-all duration-300 group-hover:-translate-y-1 group-hover:bg-card group-hover:shadow-lg group-hover:border-primary/30 w-full relative overflow-hidden">
-                    <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
-                    <div className="font-semibold text-foreground text-lg group-hover:text-primary transition-colors">Automated Settlement</div>
-                    <div className="mt-1.5 text-sm text-muted-foreground leading-relaxed">Smart contracts instantly execute the claim payout to the farmer and distribute the USDC bounty proportionally to contributing honest nodes.</div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="mt-8">
-                <a href="https://geoproof.gitbook.io/geoproof-docs/documentation" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline">
-                  Read the documentation
-                  <ExternalLink className="h-3 w-3" />
-                </a>
-              </div>
             </div>
 
-            <div className="overflow-hidden rounded-lg border border-border bg-[#0d1117]">
-              <div className="flex items-center gap-2 border-b border-white/10 px-4 py-3">
-                <div className="h-3 w-3 rounded-full bg-white/20" />
-                <div className="h-3 w-3 rounded-full bg-white/20" />
-                <div className="h-3 w-3 rounded-full bg-white/20" />
-                <span className="ml-2 text-xs text-white/40">example.ts</span>
+            <div className="mt-16 flex items-center justify-center gap-8 opacity-50 grayscale hover:grayscale-0 transition-all">
+              <div className="flex items-center gap-2 text-sm font-bold">
+                <SolanaLogo className="h-5 w-5" />
+                POWERED BY SOLANA
               </div>
-              <pre className="overflow-x-auto p-4 text-sm leading-relaxed">
-                <code className="font-mono text-[13px] text-white/90">{codeExample}</code>
-              </pre>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* How it works */}
-      <section className="border-t border-border py-16 md:py-24">
-        <div className="mx-auto max-w-6xl px-4">
-          <h2 className="text-2xl font-semibold tracking-tight md:text-3xl">
-            Protocol mechanics
-          </h2>
-          <p className="mt-2 max-w-xl text-muted-foreground">
-            GeoProof uses economic incentives and cryptographic verification to ensure honest reporting.
-          </p>
-
-          <div className="mt-12 grid gap-8 md:grid-cols-3">
-            <div className="rounded-lg border border-border bg-card p-6">
-              <div className="text-sm font-medium text-primary">Staking</div>
-              <h3 className="mt-2 text-lg font-medium">Node operators stake PROOF</h3>
-              <p className="mt-2 text-sm text-muted-foreground">
-                Operators must stake tokens to participate. Stakes are slashed for dishonest behavior,
-                creating economic alignment with accurate reporting.
-              </p>
-            </div>
-
-            <div className="rounded-lg border border-border bg-card p-6">
-              <div className="text-sm font-medium text-primary">Evidence</div>
-              <h3 className="mt-2 text-lg font-medium">Geotagged proof collection</h3>
-              <p className="mt-2 text-sm text-muted-foreground">
-                Photos are cryptographically signed with GPS coordinates and timestamps.
-                The mobile app prevents location spoofing through attestation.
-              </p>
-            </div>
-
-            <div className="rounded-lg border border-border bg-card p-6">
-              <div className="text-sm font-medium text-primary">Consensus</div>
-              <h3 className="mt-2 text-lg font-medium">Multi-node verification</h3>
-              <p className="mt-2 text-sm text-muted-foreground">
-                Multiple independent operators must reach consensus. Outlier votes are penalized,
-                ensuring reliable verification outcomes.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* For operators */}
-      <section className="border-t border-border bg-card/30 py-16 md:py-24">
-        <div className="mx-auto max-w-6xl px-4">
-          <div className="grid gap-12 lg:grid-cols-2 lg:gap-16">
-            <div>
-              <div className="text-sm font-medium text-primary">For node operators</div>
-              <h2 className="mt-2 text-2xl font-semibold tracking-tight md:text-3xl">
-                Earn PROOF tokens
-              </h2>
-              <p className="mt-4 text-muted-foreground">
-                Run a GeoProof node and earn rewards for collecting evidence. Higher stake and
-                reputation scores increase your assignment probability and earnings.
-              </p>
-
-              <div className="mt-8 rounded-lg border border-border bg-card p-6">
-                <div className="flex items-baseline justify-between">
-                  <span className="text-sm text-muted-foreground">Average monthly earnings</span>
-                  <span className="text-sm text-muted-foreground">10K PROOF staked</span>
-                </div>
-                <div className="mt-2 text-3xl font-semibold">847 PROOF</div>
-                <div className="mt-1 text-sm text-muted-foreground">~$1,694 at current prices</div>
-
-                <div className="mt-6 grid grid-cols-2 gap-4 border-t border-border pt-6">
-                  <div>
-                    <div className="text-sm text-muted-foreground">APY</div>
-                    <div className="text-lg font-medium">101.6%</div>
-                  </div>
-                  <div>
-                    <div className="text-sm text-muted-foreground">Assignments/mo</div>
-                    <div className="text-lg font-medium">~24</div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="mt-6">
-                <a href="https://geoproof.gitbook.io/geoproof-docs/documentation" target="_blank" rel="noopener noreferrer">
-                  <Button variant="outline" className="gap-2">
-                    Operator guide
-                    <ExternalLink className="h-4 w-4" />
-                  </Button>
-                </a>
-              </div>
-            </div>
-
-            <div>
-              <div className="text-sm font-medium text-primary">For insurers</div>
-              <h2 className="mt-2 text-2xl font-semibold tracking-tight md:text-3xl">
-                Reduce fraud, automate claims
-              </h2>
-              <p className="mt-4 text-muted-foreground">
-                Integrate GeoProof verification into your claims workflow. Get cryptographic proof
-                of field conditions without sending adjusters.
-              </p>
-
-              <div className="mt-8 rounded-lg border border-border bg-card p-6">
-                <div className="text-sm text-muted-foreground">Verification cost</div>
-                <div className="mt-2 text-3xl font-semibold">$12 - $45</div>
-                <div className="mt-1 text-sm text-muted-foreground">vs $150+ for field adjuster</div>
-
-                <div className="mt-6 grid grid-cols-2 gap-4 border-t border-border pt-6">
-                  <div>
-                    <div className="text-sm text-muted-foreground">Avg resolution</div>
-                    <div className="text-lg font-medium">4.2 hours</div>
-                  </div>
-                  <div>
-                    <div className="text-sm text-muted-foreground">Fraud reduction</div>
-                    <div className="text-lg font-medium">73%</div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="mt-6">
-                <a href="https://geoproof.gitbook.io/geoproof-docs/documentation" target="_blank" rel="noopener noreferrer">
-                  <Button variant="outline" className="gap-2">
-                    Integration guide
-                    <ExternalLink className="h-4 w-4" />
-                  </Button>
-                </a>
+              <div className="h-4 w-px bg-border" />
+              <div className="flex items-center gap-2 text-sm font-bold tracking-widest uppercase">
+                <ShieldCheck className="h-5 w-5 text-primary" />
+                DePIN NETWORK
               </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* CTA */}
-      <section className="border-t border-border py-16 md:py-24">
-        <div className="mx-auto max-w-6xl px-4 text-center">
-          <h2 className="text-2xl font-semibold tracking-tight md:text-3xl">
-            Start building on GeoProof
-          </h2>
-          <p className="mx-auto mt-4 max-w-md text-muted-foreground">
-            The network is live on devnet. Run a node, integrate the SDK, or explore the dashboard.
-          </p>
-
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-            <Link href="/dashboard">
-              <Button className="gap-2">
-                Open Dashboard
-                <ArrowRight className="h-4 w-4" />
-              </Button>
-            </Link>
-            <a href="https://geoproof.gitbook.io/geoproof-docs/documentation" target="_blank" rel="noopener noreferrer">
-              <Button variant="outline" className="gap-2">Documentation <ExternalLink className="h-4 w-4" /></Button>
-            </a>
+        {/* Network Stats */}
+        <section className="py-12 border-y border-border/50 bg-card/30 backdrop-blur-sm">
+          <div className="mx-auto max-w-7xl px-6">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
+              {networkStats.map((stat, i) => (
+                <div key={stat.label} className="flex flex-col items-center md:items-start">
+                  <div className="text-3xl md:text-4xl font-black text-foreground">{stat.value}</div>
+                  <div className="mt-1 text-sm font-medium text-muted-foreground uppercase tracking-wider">{stat.label}</div>
+                  <div className="text-xs text-primary font-semibold mt-0.5">{stat.detail}</div>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+
+        {/* Onboarding Paths */}
+        <section className="py-24 md:py-32">
+          <div className="mx-auto max-w-7xl px-6">
+            <div className="text-center mb-16">
+              <h2 className="text-3xl md:text-5xl font-bold tracking-tight">Choose your role</h2>
+              <p className="mt-4 text-muted-foreground text-lg">Whether you are an insurer or an operator, joining GeoProof is seamless.</p>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-8">
+              {/* Path 1: Insurers */}
+              <Card className="glass-card overflow-hidden group hover:border-primary/50 transition-colors border-white/5 bg-white/2">
+                <CardContent className="p-8 md:p-12">
+                  <div className="h-14 w-14 rounded-2xl bg-primary/10 flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
+                    <ShieldCheck className="h-8 w-8 text-primary" />
+                  </div>
+                  <h3 className="text-3xl font-bold mb-4">For Insurance Providers</h3>
+                  <p className="text-muted-foreground text-lg mb-8 leading-relaxed">
+                    Automate your claims process with high-fidelity, on-chain verification. Reduce fraud and overhead costs by 70%.
+                  </p>
+                  <ul className="space-y-4 mb-10">
+                    {[
+                      "Create verification requests in seconds",
+                      "Monitor evidence collection in real-time",
+                      "Automated consensus-based settlement",
+                      "Transparent audit trail on Solana"
+                    ].map((item) => (
+                      <li key={item} className="flex items-center gap-3 text-sm font-medium">
+                        <div className="h-5 w-5 rounded-full bg-primary/20 flex items-center justify-center">
+                          <Check className="h-3 w-3 text-primary" />
+                        </div>
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                  <Link href="/dashboard/verifications">
+                    <Button className="w-full h-12 text-base font-bold">Request Verification</Button>
+                  </Link>
+                </CardContent>
+              </Card>
+
+              {/* Path 2: Operators */}
+              <Card className="glass-card overflow-hidden group hover:border-emerald-500/50 transition-colors border-white/5 bg-white/2">
+                <CardContent className="p-8 md:p-12">
+                  <div className="h-14 w-14 rounded-2xl bg-emerald-500/10 flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
+                    <Coins className="h-8 w-8 text-emerald-500" />
+                  </div>
+                  <h3 className="text-3xl font-bold mb-4">For Node Operators</h3>
+                  <p className="text-muted-foreground text-lg mb-8 leading-relaxed">
+                    Earn rewards by collecting geospatial evidence. Help secure the network and provide vital data for farmers.
+                  </p>
+                  <ul className="space-y-4 mb-10">
+                    {[
+                      "Stake PROOF to join the network",
+                      "Receive localized verification tasks",
+                      "Capture & sign encrypted evidence",
+                      "Earn high APY on your staked tokens"
+                    ].map((item) => (
+                      <li key={item} className="flex items-center gap-3 text-sm font-medium">
+                        <div className="h-5 w-5 rounded-full bg-emerald-500/20 flex items-center justify-center">
+                          <Check className="h-3 w-3 text-emerald-500" />
+                        </div>
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                  <Link href="/dashboard/nodes">
+                    <Button variant="outline" className="w-full h-12 text-base font-bold hover:bg-emerald-500/10 hover:text-emerald-500 border-emerald-500/20">Become an Operator</Button>
+                  </Link>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </section>
+
+        {/* How it Works - Process */}
+        <section className="py-24 bg-card/20 relative overflow-hidden">
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
+          <div className="mx-auto max-w-7xl px-6">
+            <div className="flex flex-col md:flex-row justify-between items-end gap-6 mb-16">
+              <div className="max-w-2xl">
+                <h2 className="text-3xl md:text-5xl font-bold tracking-tight">How it works</h2>
+                <p className="mt-4 text-muted-foreground text-lg italic">The journey from claim request to on-chain settlement.</p>
+              </div>
+              <div className="flex gap-4">
+                <div className="flex items-center gap-2 text-sm font-medium text-primary">
+                  <div className="h-2 w-2 rounded-full bg-primary animate-pulse" />
+                  Live Protocol
+                </div>
+              </div>
+            </div>
+
+            <div className="grid md:grid-cols-5 gap-4 relative">
+              {/* Connector Line (Desktop) */}
+              <div className="hidden md:block absolute top-1/2 left-0 right-0 h-0.5 bg-gradient-to-r from-primary/5 via-primary/40 to-primary/5 -translate-y-[100px] z-0" />
+
+              {[
+                { step: "01", title: "Request", desc: "Insurer posts verification job with USDC bounty.", icon: Search },
+                { step: "02", title: "Match", desc: "Network routes job to nearby reputable nodes.", icon: Zap },
+                { step: "03", title: "Collect", desc: "Operators capture signed geospatial evidence.", icon: MapPin },
+                { step: "04", title: "Consensus", desc: "Nodes verify data authenticity on-chain.", icon: Lock },
+                { step: "05", title: "Settle", desc: "Rewards distributed & claim auto-payout.", icon: Coins },
+              ].map((item, i) => (
+                <div key={item.step} className="relative z-10 flex flex-col items-center text-center group">
+                  <div className="h-16 w-16 rounded-full bg-background border-2 border-primary/20 flex items-center justify-center mb-6 group-hover:border-primary group-hover:shadow-[0_0_20px_rgba(var(--primary),0.3)] transition-all duration-300">
+                    <item.icon className="h-7 w-7 text-primary" />
+                  </div>
+                  <div className="text-xs font-black text-primary uppercase tracking-[0.2em] mb-2">{item.step}</div>
+                  <h4 className="text-xl font-bold mb-2">{item.title}</h4>
+                  <p className="text-sm text-muted-foreground leading-relaxed px-4">{item.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Developer Experience */}
+        <section className="py-24 md:py-32">
+          <div className="mx-auto max-w-7xl px-6">
+            <div className="grid lg:grid-cols-2 gap-16 items-center">
+              <div>
+                <Badge className="mb-4">DEVELOPER FIRST</Badge>
+                <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-6">
+                  Build the future of <br />
+                  <span className="text-primary">InsureTech</span>
+                </h2>
+                <p className="text-muted-foreground text-lg mb-8 leading-relaxed">
+                  The GeoProof SDK provides a seamless interface to integrate decentralized verification into any application. Written in TypeScript, optimized for Solana.
+                </p>
+
+                <div className="space-y-6">
+                  <div className="flex gap-4">
+                    <div className="h-10 w-10 shrink-0 rounded-lg bg-primary/10 flex items-center justify-center">
+                      <Zap className="h-5 w-5 text-primary" />
+                    </div>
+                    <div>
+                      <div className="font-bold">Lightning Fast</div>
+                      <p className="text-sm text-muted-foreground">Verification events emitted in under 400ms via Solana's high-speed network.</p>
+                    </div>
+                  </div>
+                  <div className="flex gap-4">
+                    <div className="h-10 w-10 shrink-0 rounded-lg bg-primary/10 flex items-center justify-center">
+                      <Globe className="h-5 w-5 text-primary" />
+                    </div>
+                    <div>
+                      <div className="font-bold">Global Coverage</div>
+                      <p className="text-sm text-muted-foreground">Access nodes in over 40 countries through a single unified API.</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-10 flex gap-4">
+                  <a href="https://geoproof.gitbook.io/geoproof-docs/documentation" target="_blank" rel="noopener noreferrer">
+                    <Button className="font-bold">View SDK Docs</Button>
+                  </a>
+                  <a href="https://github.com/geoproof" target="_blank" rel="noopener noreferrer">
+                    <Button variant="ghost" className="font-bold gap-2">
+                      <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.841 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                      GitHub
+                    </Button>
+                  </a>
+                </div>
+              </div>
+
+              <div className="relative group">
+                <div className="absolute -inset-4 bg-primary/20 rounded-3xl blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-[#0d1117] shadow-2xl">
+                  <div className="flex items-center justify-between border-b border-white/10 px-6 py-4 bg-white/5">
+                    <div className="flex gap-2">
+                      <div className="h-3 w-3 rounded-full bg-[#ff5f56]" />
+                      <div className="h-3 w-3 rounded-full bg-[#ffbd2e]" />
+                      <div className="h-3 w-3 rounded-full bg-[#27c93f]" />
+                    </div>
+                    <span className="text-xs font-mono text-white/40">geoproof-demo.ts</span>
+                  </div>
+                  <pre className="overflow-x-auto p-8 text-sm leading-relaxed custom-scrollbar">
+                    <code className="font-mono text-[14px] text-emerald-400">
+                      {codeExample}
+                    </code>
+                  </pre>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* FAQ Section */}
+        <section className="py-24 border-t border-border/50">
+          <div className="mx-auto max-w-3xl px-6">
+            <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-center mb-12">Frequently Asked Questions</h2>
+            <Accordion type="single" collapsible className="w-full">
+              {[
+                { q: "How does GeoProof prevent location spoofing?", a: "We use Trusted Execution Environments (TEEs) and device-level hardware attestation on our mobile node software to ensure that GPS coordinates are authentic and captured in real-time." },
+                { q: "What tokens are used for rewards?", a: "Bounties are paid in USDC or SOL by the insurer, while node operators also earn PROOF tokens as an incentive for maintaining high reputation and long-term staking." },
+                { q: "Can I integrate this into an existing web2 insurance platform?", a: "Absolutely. Our SDK provides a standard REST-like interface and hooks that allow you to interact with the Solana program without needing to manage private keys for your users directly." },
+                { q: "What happens if nodes disagree on evidence?", a: "The protocol uses a majority-consensus model. Nodes that submit evidence that is significantly different from the consensus are penalized through stake slashing, ensuring high data integrity." }
+              ].map((item, i) => (
+                <AccordionItem key={i} value={`item-${i}`} className="border-border/50 px-2">
+                  <AccordionTrigger className="text-left font-bold py-6 hover:text-primary transition-colors">{item.q}</AccordionTrigger>
+                  <AccordionContent className="text-muted-foreground leading-relaxed pb-6">
+                    {item.a}
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          </div>
+        </section>
+
+        {/* Final CTA */}
+        <section className="py-24 relative overflow-hidden">
+          <div className="radial-glow absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[500px] w-[500px] opacity-20 pointer-events-none" />
+          <div className="mx-auto max-w-7xl px-6 text-center">
+            <h2 className="text-4xl md:text-6xl font-black tracking-tighter mb-8">
+              Ready to verify the <br />
+              <span className="text-primary">physical world?</span>
+            </h2>
+            <div className="flex flex-wrap justify-center gap-6">
+              <Link href="/dashboard">
+                <Button size="lg" className="h-14 px-10 text-lg font-bold">Launch App</Button>
+              </Link>
+              <a href="https://geoproof.gitbook.io/geoproof-docs/documentation" target="_blank" rel="noopener noreferrer">
+                <Button variant="outline" size="lg" className="h-14 px-10 text-lg font-bold">Read the Docs</Button>
+              </a>
+            </div>
+          </div>
+        </section>
+      </main>
 
       {/* Footer */}
-      <footer className="border-t border-border bg-card/30">
-        <div className="mx-auto max-w-6xl px-4 py-8">
-          <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
-            <div className="flex items-center gap-2">
-              <div className="flex h-6 w-6 items-center justify-center rounded bg-primary text-primary-foreground">
-                <span className="text-xs font-bold">G</span>
+      <footer className="border-t border-border/50 bg-card/50 backdrop-blur-md pt-16 pb-12">
+        <div className="mx-auto max-w-7xl px-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-12 mb-16">
+            <div className="col-span-2 md:col-span-1">
+              <Link href="/" className="flex items-center gap-2 font-bold text-xl mb-6">
+                <div className="h-8 w-8 rounded bg-primary flex items-center justify-center text-primary-foreground">G</div>
+                GeoProof
+              </Link>
+              <p className="text-muted-foreground text-sm leading-relaxed mb-6">
+                Decentralized geospatial verification for the next generation of parametric insurance.
+              </p>
+              <div className="flex gap-4">
+                <a href="#" className="h-10 w-10 rounded-full border border-border flex items-center justify-center hover:bg-primary/10 hover:border-primary transition-colors">
+                  <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/></svg>
+                </a>
+                <a href="#" className="h-10 w-10 rounded-full border border-border flex items-center justify-center hover:bg-primary/10 hover:border-primary transition-colors">
+                  <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.841 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                </a>
               </div>
-              <span className="font-medium">GeoProof</span>
-              <span className="text-muted-foreground">|</span>
-              <span className="flex items-center gap-1.5 text-sm text-muted-foreground">
-                Built on <SolanaLogo className="h-3 w-3" /> Solana
-              </span>
+            </div>
+            
+            <div>
+              <h4 className="font-bold mb-6 uppercase text-xs tracking-widest text-primary">Protocol</h4>
+              <ul className="space-y-4 text-sm text-muted-foreground">
+                <li><Link href="/dashboard" className="hover:text-foreground">Network Explorer</Link></li>
+                <li><Link href="/governance" className="hover:text-foreground">Governance</Link></li>
+                <li><Link href="/staking" className="hover:text-foreground">Staking</Link></li>
+                <li><Link href="/whitepaper" className="hover:text-foreground">Whitepaper</Link></li>
+              </ul>
             </div>
 
-            <div className="flex items-center gap-6 text-sm text-muted-foreground">
-              <a href="https://geoproof.gitbook.io/geoproof-docs/documentation" target="_blank" rel="noopener noreferrer" className="hover:text-foreground">Docs</a>
-              <a href="https://github.com/geoproof" className="hover:text-foreground">GitHub</a>
-              <a href="https://twitter.com/geoproof" className="hover:text-foreground">Twitter</a>
-              <Link href="/legal/privacy" className="hover:text-foreground">Privacy</Link>
+            <div>
+              <h4 className="font-bold mb-6 uppercase text-xs tracking-widest text-primary">Resources</h4>
+              <ul className="space-y-4 text-sm text-muted-foreground">
+                <li><a href="https://geoproof.gitbook.io/geoproof-docs/documentation" className="hover:text-foreground">Documentation</a></li>
+                <li><a href="#" className="hover:text-foreground">API Reference</a></li>
+                <li><a href="#" className="hover:text-foreground">Brand Assets</a></li>
+                <li><a href="#" className="hover:text-foreground">Media Kit</a></li>
+              </ul>
+            </div>
+
+            <div>
+              <h4 className="font-bold mb-6 uppercase text-xs tracking-widest text-primary">Legal</h4>
+              <ul className="space-y-4 text-sm text-muted-foreground">
+                <li><Link href="/privacy" className="hover:text-foreground">Privacy Policy</Link></li>
+                <li><Link href="/terms" className="hover:text-foreground">Terms of Service</Link></li>
+                <li><Link href="/compliance" className="hover:text-foreground">Compliance</Link></li>
+              </ul>
+            </div>
+          </div>
+          
+          <div className="pt-12 border-t border-border/50 flex flex-col md:flex-row justify-between items-center gap-6">
+            <div className="text-xs text-muted-foreground font-medium">
+              © 2026 GeoProof Protocol. All rights reserved.
+            </div>
+            <div className="flex items-center gap-2 text-xs font-bold text-muted-foreground/60">
+              BUILT ON <SolanaLogo className="h-3 w-3" /> SOLANA
             </div>
           </div>
         </div>
