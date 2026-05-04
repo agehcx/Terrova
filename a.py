@@ -1,0 +1,875 @@
+
+
+from pathlib import Path
+from textwrap import dedent
+
+out = Path('./output')
+out.mkdir(exist_ok=True)
+
+html = dedent('''
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GeoProof — Business Plan, PRD, Brand, and Build Roadmap</title>
+  <style>
+    :root {
+      --bg: #f4f1ea;
+      --surface: #fbfaf7;
+      --surface-2: #f0ece5;
+      --text: #1f241f;
+      --muted: #5d675f;
+      --line: #d8d2c8;
+      --primary: #0d6b5f;
+      --primary-2: #17493f;
+      --success: #3f7a2b;
+      --warn: #9a5a12;
+      --radius: 16px;
+      --shadow: 0 10px 30px rgba(24, 33, 29, 0.08);
+      --max: 1120px;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+    .wrap { max-width: var(--max); margin: 0 auto; padding: 28px; }
+    .hero {
+      padding: 56px 0 28px;
+      display: grid;
+      gap: 18px;
+    }
+    .eyebrow {
+      display: inline-flex;
+      gap: 10px;
+      align-items: center;
+      color: var(--primary);
+      font-weight: 700;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      font-size: 12px;
+    }
+    h1, h2, h3 { line-height: 1.12; margin: 0; }
+    h1 { font-size: clamp(36px, 5vw, 64px); max-width: 12ch; }
+    h2 { font-size: clamp(24px, 3vw, 34px); margin-bottom: 14px; }
+    h3 { font-size: 20px; margin-bottom: 8px; }
+    p { margin: 0 0 14px; max-width: 78ch; }
+    .lead { font-size: 18px; color: var(--muted); max-width: 68ch; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 18px;
+    }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 22px;
+      box-shadow: var(--shadow);
+    }
+    .span-12 { grid-column: span 12; }
+    .span-8 { grid-column: span 8; }
+    .span-6 { grid-column: span 6; }
+    .span-4 { grid-column: span 4; }
+    .span-3 { grid-column: span 3; }
+    .kpi {
+      background: linear-gradient(180deg, #fefefc, #f3efe7);
+    }
+    .kpi strong { display: block; font-size: 28px; margin-bottom: 4px; }
+    .pill {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: #dbeae6;
+      color: var(--primary-2);
+      font-size: 12px;
+      font-weight: 700;
+      margin: 0 8px 8px 0;
+    }
+    ul, ol { margin: 0; padding-left: 20px; }
+    li { margin: 0 0 8px; }
+    section { padding: 18px 0; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+      background: var(--surface);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    th, td {
+      text-align: left;
+      padding: 12px 10px;
+      border-bottom: 1px solid var(--line);
+      vertical-align: top;
+    }
+    th { background: var(--surface-2); }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .logo {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--primary), #62a183);
+      position: relative;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.25);
+    }
+    .logo:before, .logo:after {
+      content: "";
+      position: absolute;
+      border-radius: 999px;
+      background: rgba(255,255,255,.85);
+    }
+    .logo:before { width: 22px; height: 8px; left: 11px; top: 12px; transform: rotate(-28deg); }
+    .logo:after { width: 12px; height: 12px; left: 20px; top: 20px; }
+    .toc a {
+      color: var(--primary-2);
+      text-decoration: none;
+      display: block;
+      padding: 6px 0;
+    }
+    .muted { color: var(--muted); }
+    .note {
+      border-left: 4px solid var(--primary);
+      padding-left: 14px;
+      color: var(--muted);
+    }
+    .footer {
+      padding: 40px 0 64px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .check li::marker { color: var(--success); }
+    .warn li::marker { color: var(--warn); }
+    @media (max-width: 900px) {
+      .span-8, .span-6, .span-4, .span-3 { grid-column: span 12; }
+      .wrap { padding: 18px; }
+      .hero { padding-top: 26px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="hero" id="top">
+      <div class="brand">
+        <div class="logo" aria-hidden="true"></div>
+        <div>
+          <div class="eyebrow">GeoProof · Solana DePIN for parametric agri-insurance</div>
+          <div class="muted">Business plan, PRD, branding, architecture, integrations, and 6–7 day build roadmap</div>
+        </div>
+      </div>
+      <h1>Build a climate-risk data rail for agriculture.</h1>
+      <p class="lead">GeoProof is a narrow-scope DePIN product on Solana that lets field devices and simulated remote-sensing nodes publish verifiable crop-health evidence, while insurers and partners pay in USDC to access automated claim verification and event records.</p>
+      <div>
+        <span class="pill">Solo-friendly</span>
+        <span class="pill">Hackathon-ready</span>
+        <span class="pill">Devnet-first</span>
+        <span class="pill">Climate/public-goods framing</span>
+      </div>
+    </header>
+
+    <section>
+      <div class="grid">
+        <div class="card span-8 toc">
+          <h2>Document map</h2>
+          <a href="#summary">1. Executive summary</a>
+          <a href="#problem">2. Problem and opportunity</a>
+          <a href="#business">3. Business model</a>
+          <a href="#product">4. Product and features</a>
+          <a href="#prd">5. Full PRD</a>
+          <a href="#brand">6. Brand and CI</a>
+          <a href="#tech">7. Technical architecture</a>
+          <a href="#integrations">8. Integrations</a>
+          <a href="#roadmap">9. 6–7 day implementation plan</a>
+          <a href="#ops">10. Operations, risks, and KPIs</a>
+          <a href="#pitch">11. Demo and investor framing</a>
+        </div>
+        <div class="card span-4 kpi">
+          <h3>Working one-liner</h3>
+          <p><strong>Field + remote sensing proof</strong></p>
+          <p>Sensor nodes post geotagged crop-health evidence to Solana; insurers pay USDC to verify claims and trigger automated payouts or inspections.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="summary">
+      <h2>Executive summary</h2>
+      <div class="grid">
+        <div class="card span-6">
+          <h3>What it is</h3>
+          <p>GeoProof is a verifiable crop-condition network designed for Southeast Asian agricultural insurance. It combines simulated field sensors, optional drone or satellite-derived observations, a Solana-based proof registry, and USDC settlement for enterprise data access.</p>
+          <p>The initial product is not a full remote-sensing marketplace. It is a tight vertical workflow focused on one job: make crop-damage validation faster, cheaper, and more trustable.</p>
+        </div>
+        <div class="card span-6">
+          <h3>Why it wins</h3>
+          <ul class="check">
+            <li>Narrow wedge: insurance verification instead of generic Earth-data marketplace.</li>
+            <li>Hackable MVP: simulation is enough; no dependency on live satellites for demo value.</li>
+            <li>Compelling token story: reward nodes for useful evidence, not speculative noise.</li>
+            <li>Climate framing: resilience, transparency, and public-good environmental infrastructure.</li>
+          </ul>
+        </div>
+        <div class="card span-4 kpi">
+          <strong>Target users</strong>
+          <div class="muted">Agricultural insurers, reinsurers, agribusiness lenders, cooperatives, climate-risk programs</div>
+        </div>
+        <div class="card span-4 kpi">
+          <strong>Initial revenue</strong>
+          <div class="muted">USDC per verification request, API access, partner pilots, annual enterprise contracts</div>
+        </div>
+        <div class="card span-4 kpi">
+          <strong>MVP timebox</strong>
+          <div class="muted">6–7 days, roughly 30–36 focused solo hours, vibe-coded but still demo-safe</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="problem">
+      <h2>Problem and opportunity</h2>
+      <div class="grid">
+        <div class="card span-6">
+          <h3>Core problem</h3>
+          <p>Agricultural insurance claims are slow and disputed because evidence is fragmented. Farmers, insurers, field adjusters, and data vendors often rely on inconsistent timestamps, unverifiable media, and delayed site visits.</p>
+          <p>When claims are triggered by flood, drought, disease, or heat stress, the highest-value evidence exists in short time windows. Missing or manipulated records increase loss ratios and reduce trust.</p>
+        </div>
+        <div class="card span-6">
+          <h3>Market opening</h3>
+          <p>Southeast Asia has expanding climate-risk exposure, fragmented agricultural data infrastructure, and many crop systems where on-the-ground proof still matters. That makes this region a strong starting point for a proof network that mixes remote sensing and field observations.</p>
+          <p>GeoProof enters as infrastructure, not a full insurer. That keeps scope light and makes B2B sales clearer.</p>
+        </div>
+        <div class="card span-12">
+          <h3>Positioning statement</h3>
+          <p class="note">GeoProof is the verifiable evidence layer for crop-insurance decisions: fast enough for operations, transparent enough for auditors, and simple enough to launch as a solo-built MVP on Solana devnet.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="business">
+      <h2>Business model</h2>
+      <div class="grid">
+        <div class="card span-7">
+          <h3>Revenue streams</h3>
+          <ol>
+            <li><strong>Verification fee:</strong> insurer pays per claim validation request in USDC.</li>
+            <li><strong>Enterprise subscription:</strong> recurring access to dashboard, APIs, audit trail, and analytics.</li>
+            <li><strong>Data partnership fee:</strong> custom feeds for co-ops, lenders, or climate programs.</li>
+            <li><strong>White-label integration:</strong> workflow or widget integration into insurer systems.</li>
+          </ol>
+        </div>
+        <div class="card span-5">
+          <h3>Cost structure</h3>
+          <ul>
+            <li>Solana transaction and storage costs.</li>
+            <li>RPC and indexing service costs.</li>
+            <li>Cloud hosting for dashboard and worker jobs.</li>
+            <li>Remote-sensing data and drone partnerships later.</li>
+            <li>Legal/compliance overhead when moving beyond prototype.</li>
+          </ul>
+        </div>
+        <div class="card span-12">
+          <h3>Business model table</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Layer</th>
+                <th>Who pays</th>
+                <th>Why they pay</th>
+                <th>MVP pricing idea</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Claim verification</td>
+                <td>Insurer / risk partner</td>
+                <td>Reduce adjuster cost and dispute time</td>
+                <td>$5–25 equivalent in USDC per request</td>
+              </tr>
+              <tr>
+                <td>Dashboard access</td>
+                <td>Pilot partner</td>
+                <td>Monitor claims, farms, and data quality</td>
+                <td>$500–2,000 monthly pilot</td>
+              </tr>
+              <tr>
+                <td>API / export</td>
+                <td>Enterprise user</td>
+                <td>Embed into internal systems</td>
+                <td>Tiered usage billing</td>
+              </tr>
+              <tr>
+                <td>Node incentives</td>
+                <td>Protocol treasury</td>
+                <td>Bootstrap useful evidence coverage</td>
+                <td>Reward pool, capped for MVP</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section id="product">
+      <h2>Product and feature set</h2>
+      <div class="grid">
+        <div class="card span-4">
+          <h3>User roles</h3>
+          <ul>
+            <li>Node operator</li>
+            <li>Insurer analyst</li>
+            <li>Protocol admin</li>
+            <li>Auditor / observer</li>
+            <li>Optional farmer portal user later</li>
+          </ul>
+        </div>
+        <div class="card span-8">
+          <h3>MVP feature modules</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Module</th>
+                <th>What it does</th>
+                <th>MVP depth</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Node registration</td>
+                <td>Register sensor / data node wallet and metadata</td>
+                <td>Basic allowlist + geohash + type</td>
+              </tr>
+              <tr>
+                <td>Evidence submission</td>
+                <td>Post timestamped data hash and coordinates</td>
+                <td>Anchor instruction + off-chain JSON/IPFS-ready reference</td>
+              </tr>
+              <tr>
+                <td>Claim request</td>
+                <td>Insurer creates a verification request and pays in USDC</td>
+                <td>Simple request object + fee transfer</td>
+              </tr>
+              <tr>
+                <td>Scoring engine</td>
+                <td>Aggregate evidence quality and compute confidence</td>
+                <td>Python/TS rules-based score</td>
+              </tr>
+              <tr>
+                <td>Rewards</td>
+                <td>Distribute SPL token rewards to contributing nodes</td>
+                <td>Single reward pool and batch distribution</td>
+              </tr>
+              <tr>
+                <td>Dashboard</td>
+                <td>Map, event feed, wallet status, node leaderboard</td>
+                <td>Next.js front end + wallet connect</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card span-6">
+          <h3>Nice-to-have, not required for MVP</h3>
+          <ul class="warn">
+            <li>Live satellite ingestion from commercial providers.</li>
+            <li>On-chain ML inference.</li>
+            <li>Farmer-facing mobile app.</li>
+            <li>DAO governance and complex staking.</li>
+            <li>Cross-chain settlement.</li>
+          </ul>
+        </div>
+        <div class="card span-6">
+          <h3>North-star product vision</h3>
+          <p>Long term, GeoProof becomes a regional environmental evidence network. Insurance is the entry wedge, but the same data rails can support climate finance, regenerative agriculture, lender underwriting, compliance reporting, and disaster monitoring.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="prd">
+      <h2>Product requirements document</h2>
+      <div class="grid">
+        <div class="card span-12">
+          <h3>Product goal</h3>
+          <p>Enable enterprise users to request verifiable crop-condition evidence for a location and date range, pay on-chain in USDC, and receive a transparent evidence trail plus confidence score, while rewarding contributing data nodes.</p>
+        </div>
+        <div class="card span-6">
+          <h3>Primary jobs to be done</h3>
+          <ul>
+            <li>As an insurer, I want to verify whether a farm likely experienced crop stress during a claim window.</li>
+            <li>As a node operator, I want to earn rewards for submitting useful, timely, location-linked evidence.</li>
+            <li>As an admin, I want to review network quality and prevent spam data.</li>
+            <li>As an auditor, I want a tamper-evident record of when and where evidence was submitted.</li>
+          </ul>
+        </div>
+        <div class="card span-6">
+          <h3>Success criteria</h3>
+          <ul>
+            <li>Claim verification request can be created in under 2 minutes.</li>
+            <li>At least one full end-to-end demo flow works on Solana devnet.</li>
+            <li>Dashboard clearly visualizes node activity and evidence timeline.</li>
+            <li>Reward distribution completes automatically after verification event.</li>
+          </ul>
+        </div>
+        <div class="card span-12">
+          <h3>Functional requirements</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Requirement</th>
+                <th>Priority</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>FR-01</td><td>User can connect Solana wallet and switch to devnet.</td><td>Must</td></tr>
+              <tr><td>FR-02</td><td>Admin can register node identity with type, lat/lon or geohash, and metadata URI.</td><td>Must</td></tr>
+              <tr><td>FR-03</td><td>Node can submit evidence hash, timestamp, and summary metrics.</td><td>Must</td></tr>
+              <tr><td>FR-04</td><td>Insurer can create verification request with farm region, date window, and payment.</td><td>Must</td></tr>
+              <tr><td>FR-05</td><td>System can display evidence associated with a request on a map and timeline.</td><td>Must</td></tr>
+              <tr><td>FR-06</td><td>System can compute confidence score from available evidence.</td><td>Should</td></tr>
+              <tr><td>FR-07</td><td>Protocol can distribute reward token to eligible nodes after verification completion.</td><td>Must</td></tr>
+              <tr><td>FR-08</td><td>Admin can flag or pause malicious nodes.</td><td>Should</td></tr>
+              <tr><td>FR-09</td><td>User can export simple verification report.</td><td>Could</td></tr>
+              <tr><td>FR-10</td><td>Public viewer can inspect selected anonymized proof records.</td><td>Could</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card span-6">
+          <h3>Non-functional requirements</h3>
+          <ul>
+            <li>Clear wallet onboarding for non-crypto demo audience.</li>
+            <li>Devnet reliability with graceful fallback when RPC is slow.</li>
+            <li>Readable UI on desktop and tablet during judging/demo.</li>
+            <li>Simple, explainable scoring logic instead of opaque ML.</li>
+            <li>All important actions visible in activity history.</li>
+          </ul>
+        </div>
+        <div class="card span-6">
+          <h3>Out of scope</h3>
+          <ul>
+            <li>Real legal insurance adjudication.</li>
+            <li>Production tokenomics with open market liquidity.</li>
+            <li>Consumer sign-up flows.</li>
+            <li>Large-scale node slashing or advanced oracle consensus.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="brand">
+      <h2>Brand and CI</h2>
+      <div class="grid">
+        <div class="card span-6">
+          <h3>Brand strategy</h3>
+          <p><strong>Name:</strong> GeoProof</p>
+          <p><strong>Meaning:</strong> verifiable proof about conditions on the ground.</p>
+          <p><strong>Promise:</strong> evidence you can trust, payments you can settle, climate events you can audit.</p>
+          <p><strong>Personality:</strong> credible, calm, technical, field-grounded, climate-resilient.</p>
+        </div>
+        <div class="card span-6">
+          <h3>Messaging framework</h3>
+          <ul>
+            <li><strong>Tagline:</strong> Verified crop evidence for climate-risk decisions.</li>
+            <li><strong>Short pitch:</strong> GeoProof turns field and remote-sensing observations into on-chain evidence for agricultural insurance.</li>
+            <li><strong>Website hero:</strong> Settle crop-risk decisions with verifiable environmental proof.</li>
+            <li><strong>Judge hook:</strong> A public-good data network that makes climate risk more measurable.</li>
+          </ul>
+        </div>
+        <div class="card span-4">
+          <h3>Visual system</h3>
+          <ul>
+            <li>Primary: deep teal</li>
+            <li>Secondary: rice-field green</li>
+            <li>Neutral: warm earth beige</li>
+            <li>Accent: amber for alerts</li>
+          </ul>
+        </div>
+        <div class="card span-4">
+          <h3>Typography</h3>
+          <ul>
+            <li>Heading: Sora / Space Grotesk style</li>
+            <li>Body: Inter / General Sans style</li>
+            <li>Data: tabular sans / monospace fallback</li>
+          </ul>
+        </div>
+        <div class="card span-4">
+          <h3>Design cues</h3>
+          <ul>
+            <li>Map grids, contour lines, parcel blocks</li>
+            <li>Satellite tile motifs</li>
+            <li>Evidence cards and audit trails</li>
+            <li>No hype-crypto visuals</li>
+          </ul>
+        </div>
+        <div class="card span-12">
+          <h3>Brand voice rules</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Do</th>
+                <th>Don't</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Use plain, trustworthy language about evidence, risk, and verification.</td>
+                <td>Overuse speculative token or DeFi jargon.</td>
+              </tr>
+              <tr>
+                <td>Lead with climate resilience and operational value.</td>
+                <td>Lead with decentralization as the only benefit.</td>
+              </tr>
+              <tr>
+                <td>Show where the data came from and how it was scored.</td>
+                <td>Claim perfect accuracy or full automation.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section id="tech">
+      <h2>Technical architecture</h2>
+      <div class="grid">
+        <div class="card span-12">
+          <h3>System overview</h3>
+          <p>GeoProof uses a hybrid architecture: lightweight on-chain records for integrity and payment, plus off-chain storage and services for evidence payloads, maps, and scoring. This keeps the MVP cheap, explainable, and fast to ship.</p>
+        </div>
+        <div class="card span-4">
+          <h3>On-chain</h3>
+          <ul>
+            <li>Solana devnet</li>
+            <li>Anchor program</li>
+            <li>SPL reward token mint</li>
+            <li>USDC transfer flow</li>
+            <li>Accounts for nodes, requests, rewards</li>
+          </ul>
+        </div>
+        <div class="card span-4">
+          <h3>Off-chain</h3>
+          <ul>
+            <li>Next.js dashboard</li>
+            <li>Python or TS simulator workers</li>
+            <li>JSON evidence store</li>
+            <li>Optional IPFS/Pinata later</li>
+            <li>Map rendering and request indexing</li>
+          </ul>
+        </div>
+        <div class="card span-4">
+          <h3>Data logic</h3>
+          <ul>
+            <li>Geotag + timestamp validation</li>
+            <li>Evidence scoring</li>
+            <li>Node reputation stub</li>
+            <li>Reward allocation logic</li>
+            <li>Report generation</li>
+          </ul>
+        </div>
+        <div class="card span-12">
+          <h3>Reference stack</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Layer</th>
+                <th>Choice</th>
+                <th>Reason</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Blockchain</td><td>Solana + Anchor</td><td>Fast devnet demo, low fees, good wallet ecosystem</td></tr>
+              <tr><td>Frontend</td><td>Next.js + Tailwind + wallet adapter</td><td>Fast UI iteration and clean dashboard delivery</td></tr>
+              <tr><td>Backend jobs</td><td>Python scripts or Node workers</td><td>Easy simulation and event scheduling</td></tr>
+              <tr><td>Storage</td><td>Local JSON for demo, IPFS-ready abstraction</td><td>Move fast without external dependency risk</td></tr>
+              <tr><td>Maps</td><td>Mapbox or Leaflet</td><td>Node visualization and claim regions</td></tr>
+              <tr><td>Indexing</td><td>Simple RPC polling or lightweight parser</td><td>Enough for MVP visibility</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card span-6">
+          <h3>Anchor account design</h3>
+          <ul>
+            <li><strong>NodeAccount:</strong> wallet, node type, region, metadata URI, status.</li>
+            <li><strong>EvidenceAccount:</strong> node, request ref, hash, time, location, metrics summary.</li>
+            <li><strong>VerificationRequest:</strong> insurer wallet, farm ID, claim window, fee, state.</li>
+            <li><strong>RewardVault:</strong> token mint, pool balance, distribution state.</li>
+          </ul>
+        </div>
+        <div class="card span-6">
+          <h3>Security choices for MVP</h3>
+          <ul>
+            <li>Keep payment flows simple and scoped.</li>
+            <li>Use admin authority for pause/allowlist at MVP stage.</li>
+            <li>No unaudited staking or leveraged token logic.</li>
+            <li>Record hashes on-chain; keep large payloads off-chain.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="integrations">
+      <h2>Integrations</h2>
+      <div class="grid">
+        <div class="card span-6">
+          <h3>MVP integrations</h3>
+          <ul>
+            <li>Phantom / Solflare wallet connection</li>
+            <li>Solana wallet adapter</li>
+            <li>Devnet USDC test flow</li>
+            <li>Map provider for farm and node locations</li>
+            <li>Basic RPC endpoint</li>
+          </ul>
+        </div>
+        <div class="card span-6">
+          <h3>Phase 2 integrations</h3>
+          <ul>
+            <li>Pinata/IPFS for evidence payload pinning</li>
+            <li>Webhook or email notification service</li>
+            <li>Commercial weather or remote-sensing APIs</li>
+            <li>Claims system export for enterprise partner</li>
+            <li>Drone upload portal</li>
+          </ul>
+        </div>
+        <div class="card span-12">
+          <h3>Integration policy</h3>
+          <p>Every external integration should sit behind an adapter layer. For the hackathon build, simulate upstream satellite and field data but structure code so real providers can replace the simulator without rewriting the contract or dashboard.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="roadmap">
+      <h2>6–7 day implementation roadmap</h2>
+      <div class="grid">
+        <div class="card span-12">
+          <h3>Build assumptions</h3>
+          <p>Solo founder, 30–36 hours total, biased toward a reliable demo rather than full polish. Prioritize one happy-path flow that judges can understand in under 3 minutes.</p>
+        </div>
+        <div class="card span-12">
+          <h3>Detailed day plan</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Day</th>
+                <th>Hours</th>
+                <th>Main output</th>
+                <th>Tasks</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Day 1</td>
+                <td>4–5h</td>
+                <td>Scope lock + repo setup</td>
+                <td>Finalize user flow, set repo structure, create UI wireframe, define Anchor accounts, decide token names and wallet roles.</td>
+              </tr>
+              <tr>
+                <td>Day 2</td>
+                <td>5h</td>
+                <td>Anchor contract v1</td>
+                <td>Implement node registration, evidence submit, request create, simple fee handling; run local tests.</td>
+              </tr>
+              <tr>
+                <td>Day 3</td>
+                <td>4–5h</td>
+                <td>Reward flow + token setup</td>
+                <td>Create SPL reward token, reward vault logic, batch distribution function, devnet deployment.</td>
+              </tr>
+              <tr>
+                <td>Day 4</td>
+                <td>5–6h</td>
+                <td>Dashboard core</td>
+                <td>Build Next.js pages, wallet connect, request form, node table, map, activity feed.</td>
+              </tr>
+              <tr>
+                <td>Day 5</td>
+                <td>4–5h</td>
+                <td>Simulator + scoring</td>
+                <td>Python or TS script posts mock sensor evidence every 30s, generates sample crop-stress values, computes confidence score.</td>
+              </tr>
+              <tr>
+                <td>Day 6</td>
+                <td>4–5h</td>
+                <td>Demo integration</td>
+                <td>Connect end-to-end flow, seed demo data, create screenshots, fix RPC or wallet bugs, write demo script.</td>
+              </tr>
+              <tr>
+                <td>Day 7</td>
+                <td>3–5h</td>
+                <td>Polish and pitch</td>
+                <td>Landing page copy, branding cleanup, architecture slide, investor/judge FAQ, backup recording.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card span-6">
+          <h3>Suggested repo structure</h3>
+<pre style="white-space: pre-wrap; font-size: 13px; color: #243029; background: #f5f2eb; padding: 14px; border-radius: 12px; overflow-x:auto;">geoproof/
+  apps/
+    dashboard/
+    landing/
+  contracts/
+    programs/geoproof/
+    tests/
+  scripts/
+    sensor-sim/
+    seed-demo/
+  docs/
+    pitch/
+    prd/
+  assets/
+    brand/</pre>
+        </div>
+        <div class="card span-6">
+          <h3>Solo build priorities</h3>
+          <ul>
+            <li>Make the dashboard readable before making it fancy.</li>
+            <li>Prefer simulation over flaky real-time dependencies.</li>
+            <li>Use a small number of contract instructions.</li>
+            <li>Record a backup walkthrough video on Day 6.</li>
+            <li>Leave 15–20% time buffer for wallet/RPC issues.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="ops">
+      <h2>Operations, risks, and KPIs</h2>
+      <div class="grid">
+        <div class="card span-4">
+          <h3>Core KPIs</h3>
+          <ul>
+            <li>Number of active nodes</li>
+            <li>Evidence submissions per day</li>
+            <li>Verification requests completed</li>
+            <li>Median claim response time</li>
+            <li>Evidence confidence score coverage</li>
+            <li>USDC revenue per customer</li>
+          </ul>
+        </div>
+        <div class="card span-4">
+          <h3>Main risks</h3>
+          <ul>
+            <li>Fake or low-quality node data</li>
+            <li>Overcomplicated token model</li>
+            <li>Regulatory confusion around insurance promises</li>
+            <li>Dependence on external data vendors too early</li>
+            <li>Judges misunderstanding why blockchain is needed</li>
+          </ul>
+        </div>
+        <div class="card span-4">
+          <h3>Mitigations</h3>
+          <ul>
+            <li>Use allowlist and admin moderation in MVP.</li>
+            <li>Frame token as network reward, not investment.</li>
+            <li>State clearly that GeoProof supports decisions, not underwriting itself.</li>
+            <li>Simulate first, integrate later.</li>
+            <li>Show immutable audit trail + payment automation as blockchain benefit.</li>
+          </ul>
+        </div>
+        <div class="card span-12">
+          <h3>12-month post-hackathon roadmap</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Phase</th>
+                <th>Goal</th>
+                <th>What changes</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>0–3 months</td><td>Pilot readiness</td><td>Cleaner dashboard, stable indexing, report export, partner demo dataset</td></tr>
+              <tr><td>3–6 months</td><td>Field trial</td><td>Add real farm pilot, drone upload, partner API, reputation rules</td></tr>
+              <tr><td>6–12 months</td><td>Commercial wedge</td><td>Contracted insurer/co-op pilot, recurring dashboard fee, richer satellite/weather integration</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section id="pitch">
+      <h2>Demo and investor framing</h2>
+      <div class="grid">
+        <div class="card span-6">
+          <h3>3-minute demo script</h3>
+          <ol>
+            <li>Open dashboard and show map with registered nodes.</li>
+            <li>Create a verification request for a farm region and date window.</li>
+            <li>Run simulator so evidence appears on-chain and in the event feed.</li>
+            <li>Show confidence score and evidence record linked to wallet addresses.</li>
+            <li>Trigger USDC payment and reward distribution to contributing nodes.</li>
+          </ol>
+        </div>
+        <div class="card span-6">
+          <h3>Why Solana belongs here</h3>
+          <ul>
+            <li>Low-fee, high-speed settlement for many small evidence events.</li>
+            <li>Transparent record of who submitted what and when.</li>
+            <li>Programmable incentives for distributed data providers.</li>
+            <li>Stablecoin payments for enterprise-friendly business flow.</li>
+          </ul>
+        </div>
+        <div class="card span-12">
+          <h3>Final founder checklist</h3>
+          <ul class="check">
+            <li>One clear vertical: agri-insurance verification.</li>
+            <li>One working flow: request → evidence → score → payment → reward.</li>
+            <li>One clear message: climate proof infrastructure, not generic geo-data marketplace.</li>
+            <li>One backup path: pre-seeded data and recorded demo in case devnet misbehaves.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <div class="footer">
+      Prepared as a launch-ready planning document for GeoProof MVP execution. Use this as the base for your hackathon submission deck, landing page copy, GitHub README, and build checklist.
+    </div>
+  </div>
+</body>
+</html>
+''')
+
+md = dedent('''
+# GeoProof
+
+## One-line pitch
+GeoProof is a Solana-based DePIN for crop-insurance verification: field sensors and remote-sensing nodes submit geotagged evidence, insurers pay in USDC to verify claims, and contributing nodes earn reward tokens.
+
+## Deliverables included
+- Executive summary
+- Business model
+- Product features and functional scope
+- Full PRD outline
+- Brand / CI guidance
+- Technical architecture
+- Integration plan
+- 6–7 day implementation roadmap
+- Risks, KPIs, and demo framing
+
+## MVP scope
+- Anchor smart contract for node registration, evidence submission, request creation, and reward distribution
+- SPL reward token
+- USDC payment flow on Solana devnet
+- Python or TS sensor simulator posting data every 30s
+- Next.js dashboard with wallet connect, map, event feed, request form, and leaderboard
+
+## Suggested build sequence
+1. Lock scope and data model.
+2. Build contract instructions.
+3. Add reward flow.
+4. Build dashboard.
+5. Add simulator and scoring.
+6. Integrate demo.
+7. Polish pitch and fallback assets.
+
+See the HTML document for the full business plan.
+''')
+
+(out / 'geoproof-business-plan.html').write_text(html, encoding='utf-8')
+(out / 'geoproof-business-plan.md').write_text(md, encoding='utf-8')
+
+print('Wrote files:', [p.name for p in out.iterdir() if p.name.startswith('geoproof-business-plan')])
