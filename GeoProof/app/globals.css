@@ -127,6 +127,24 @@
   }
 }
 
+@layer utilities {
+  .grid-background {
+    background-image: linear-gradient(to right, oklch(0.25 0.02 240 / 0.1) 1px, transparent 1px),
+      linear-gradient(to bottom, oklch(0.25 0.02 240 / 0.1) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+
+  .radial-glow {
+    background: radial-gradient(circle at center, var(--primary) 0%, transparent 70%);
+    filter: blur(100px);
+    opacity: 0.15;
+  }
+
+  .glass-card {
+    @apply border border-white/10 bg-white/5 backdrop-blur-md;
+  }
+}
+
 /* Solana Wallet Adapter Overrides */
 .wallet-adapter-button {
   background-color: var(--primary) !important;
