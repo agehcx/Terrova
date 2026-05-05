@@ -1,4 +1,4 @@
-import { Program, AnchorProvider, BN } from '@project-serum/anchor';
+import { Program, AnchorProvider, BN } from '@coral-xyz/anchor';
 import { PublicKey, Connection, SystemProgram } from '@solana/web3.js';
 import type { Terrova } from './terrova.types';
 

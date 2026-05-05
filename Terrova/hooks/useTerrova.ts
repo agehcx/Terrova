@@ -18,12 +18,11 @@ export function useTerrova() {
     }
 
     try {
-      const programId = new PublicKey(
-        process.env.NEXT_PUBLIC_PROGRAM_ID || '11111111111111111111111111111111'
-      );
+      const programIdStr = process.env.NEXT_PUBLIC_PROGRAM_ID || 'Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS';
+      const programId = new PublicKey(programIdStr);
 
-      const geoProofClient = new TerrovaClient(connection, wallet, programId);
-      setClient(geoProofClient);
+      const terrovaClient = new TerrovaClient(connection, wallet, programId);
+      setClient(terrovaClient);
       setIsInitialized(true);
       setError(null);
     } catch (err) {
@@ -34,14 +33,14 @@ export function useTerrova() {
   }, [wallet.publicKey, wallet.signTransaction, connection]);
 
   const registerNode = useCallback(
-    async (name: string, latitude: number, longitude: number, region: string) => {
+    async (latitude: number, longitude: number, coverageRadiusKm: number) => {
       if (!client) {
         setError('Terrova client not initialized');
         return { success: false, error: 'Client not initialized' };
       }
 
       try {
-        const result = await client.registerNode(name, latitude, longitude, region);
+        const result = await client.registerNode(latitude, longitude, coverageRadiusKm);
         if (!result.success) {
           setError(result.error instanceof Error ? result.error.message : 'Registration failed');
         }
@@ -56,7 +55,14 @@ export function useTerrova() {
   );
 
   const submitEvidence = useCallback(
-    async (verificationRequestId: string, latitude: number, longitude: number, imageHash: string, timestamp: number) => {
+    async (
+      verificationRequestAddress: PublicKey,
+      nodeAddress: PublicKey,
+      photoHash: string,
+      latitude: number,
+      longitude: number,
+      weather: { temp: number; humidity: number; wind: number }
+    ) => {
       if (!client) {
         setError('Terrova client not initialized');
         return { success: false, error: 'Client not initialized' };
@@ -64,11 +70,12 @@ export function useTerrova() {
 
       try {
         const result = await client.submitEvidence(
-          verificationRequestId,
+          verificationRequestAddress,
+          nodeAddress,
+          photoHash,
           latitude,
           longitude,
-          imageHash,
-          timestamp
+          weather
         );
         if (!result.success) {
           setError(result.error instanceof Error ? result.error.message : 'Submission failed');
@@ -84,7 +91,15 @@ export function useTerrova() {
   );
 
   const createVerificationRequest = useCallback(
-    async (claimId: string, targetLatitude: number, targetLongitude: number, requiredEvidence: number, timeoutSeconds: number) => {
+    async (
+      latitude: number,
+      longitude: number,
+      radiusKm: number,
+      claimType: any,
+      bounty: number,
+      requiredEvidence: number,
+      deadlineSeconds: number
+    ) => {
       if (!client) {
         setError('Terrova client not initialized');
         return { success: false, error: 'Client not initialized' };
@@ -92,36 +107,16 @@ export function useTerrova() {
 
       try {
         const result = await client.createVerificationRequest(
-          claimId,
-          targetLatitude,
-          targetLongitude,
+          latitude,
+          longitude,
+          radiusKm,
+          claimType,
+          bounty,
           requiredEvidence,
-          timeoutSeconds
+          deadlineSeconds
         );
         if (!result.success) {
           setError(result.error instanceof Error ? result.error.message : 'Request creation failed');
-        }
-        return result;
-      } catch (err) {
-        const errorMsg = err instanceof Error ? err.message : 'Unknown error';
-        setError(errorMsg);
-        return { success: false, error: err };
-      }
-    },
-    [client]
-  );
-
-  const verifyEvidence = useCallback(
-    async (verificationRequestId: string, evidenceIndex: number, isValid: boolean) => {
-      if (!client) {
-        setError('Terrova client not initialized');
-        return { success: false, error: 'Client not initialized' };
-      }
-
-      try {
-        const result = await client.verifyEvidence(verificationRequestId, evidenceIndex, isValid);
-        if (!result.success) {
-          setError(result.error instanceof Error ? result.error.message : 'Verification failed');
         }
         return result;
       } catch (err) {
@@ -164,7 +159,6 @@ export function useTerrova() {
     registerNode,
     submitEvidence,
     createVerificationRequest,
-    verifyEvidence,
     claimRewards,
   };
 }

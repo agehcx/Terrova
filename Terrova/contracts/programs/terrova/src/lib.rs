@@ -19,7 +19,7 @@ pub mod terrova {
         Ok(())
     }
 
-    /// Register a new node operator with stake
+    /// Register a new node operator
     pub fn register_node(
         ctx: Context<RegisterNode>,
         location: GeoLocation,
@@ -32,7 +32,7 @@ pub mod terrova {
         node.stake_account = ctx.accounts.stake_account.key();
         node.location = location;
         node.coverage_radius_km = coverage_radius_km;
-        node.reputation = 100; // Start with perfect reputation
+        node.reputation = 100;
         node.evidence_count = 0;
         node.status = NodeStatus::Active;
         node.registered_at = Clock::get()?.unix_timestamp;
@@ -90,7 +90,6 @@ pub mod terrova {
         let request = &mut ctx.accounts.verification_request;
         let node = &mut ctx.accounts.node;
 
-        // Verify node is active and in range
         require!(node.status == NodeStatus::Active, TerrovaError::NodeNotActive);
         require!(
             is_in_range(&node.location, &request.location, request.radius_km),
@@ -109,7 +108,6 @@ pub mod terrova {
         request.submitted_evidence += 1;
         node.evidence_count += 1;
 
-        // Check if we have enough evidence to process
         if request.submitted_evidence >= request.required_evidence {
             request.status = VerificationStatus::InProgress;
         }
@@ -123,7 +121,7 @@ pub mod terrova {
         Ok(())
     }
 
-    /// Vote on submitted evidence (consensus mechanism)
+    /// Vote on submitted evidence
     pub fn vote_on_evidence(
         ctx: Context<VoteOnEvidence>,
         vote: bool,
@@ -152,7 +150,7 @@ pub mod terrova {
         Ok(())
     }
 
-    /// Finalize verification and distribute rewards
+    /// Finalize verification
     pub fn finalize_verification(ctx: Context<FinalizeVerification>) -> Result<()> {
         let request = &mut ctx.accounts.verification_request;
         
@@ -171,7 +169,7 @@ pub mod terrova {
         Ok(())
     }
 
-    /// Claim earned rewards for a node operator
+    /// Claim earned rewards
     pub fn claim_rewards(ctx: Context<ClaimRewards>) -> Result<()> {
         let rewards = &mut ctx.accounts.rewards;
         let amount = rewards.available_balance;
@@ -190,12 +188,13 @@ pub mod terrova {
         Ok(())
     }
 
-    /// Slash a node's stake for fraudulent evidence
+    /// Slash a node
     pub fn slash_node(ctx: Context<SlashNode>, slash_amount: u64) -> Result<()> {
         let node = &mut ctx.accounts.node;
+        let protocol = &ctx.accounts.protocol;
         
         require!(
-            ctx.accounts.admin.key() == ctx.accounts.protocol.admin,
+            ctx.accounts.admin.key() == protocol.admin,
             TerrovaError::Unauthorized
         );
 
@@ -213,10 +212,6 @@ pub mod terrova {
         Ok(())
     }
 }
-
-// ============================================================================
-// ACCOUNTS
-// ============================================================================
 
 #[derive(Accounts)]
 pub struct Initialize<'info> {
@@ -245,7 +240,7 @@ pub struct RegisterNode<'info> {
     pub node: Account<'info, Node>,
     #[account(mut)]
     pub protocol: Account<'info, Protocol>,
-    /// CHECK: Validated in instruction
+    /// CHECK: Placeholder
     pub stake_account: AccountInfo<'info>,
     #[account(mut)]
     pub owner: Signer<'info>,
@@ -289,7 +284,7 @@ pub struct SubmitEvidence<'info> {
     pub node: Account<'info, Node>,
     #[account(mut)]
     pub node_owner: Signer<'info>,
-    /// CHECK: Validated by has_one constraint
+    /// CHECK: Validated by has_one
     pub owner: AccountInfo<'info>,
     pub system_program: Program<'info, System>,
 }
@@ -342,10 +337,6 @@ pub struct SlashNode<'info> {
     pub protocol: Account<'info, Protocol>,
     pub admin: Signer<'info>,
 }
-
-// ============================================================================
-// STATE
-// ============================================================================
 
 #[account]
 #[derive(InitSpace)]
@@ -426,10 +417,6 @@ pub struct Rewards {
     pub bump: u8,
 }
 
-// ============================================================================
-// TYPES
-// ============================================================================
-
 #[derive(AnchorSerialize, AnchorDeserialize, Clone, InitSpace)]
 pub struct GeoLocation {
     pub latitude: i64,
@@ -502,10 +489,6 @@ pub enum EvidenceStatus {
     Rejected,
 }
 
-// ============================================================================
-// EVENTS
-// ============================================================================
-
 #[event]
 pub struct NodeRegistered {
     pub node: Pubkey,
@@ -554,10 +537,6 @@ pub struct NodeSlashed {
     pub new_reputation: u8,
 }
 
-// ============================================================================
-// ERRORS
-// ============================================================================
-
 #[error_code]
 pub enum TerrovaError {
     #[msg("Insufficient stake amount")]
@@ -577,10 +556,6 @@ pub enum TerrovaError {
     #[msg("No rewards available to claim")]
     NoRewardsAvailable,
 }
-
-// ============================================================================
-// HELPERS
-// ============================================================================
 
 fn is_in_range(node_loc: &GeoLocation, request_loc: &GeoLocation, radius_km: u32) -> bool {
     let lat_diff = (node_loc.latitude - request_loc.latitude).abs() as f64 / 1e7;

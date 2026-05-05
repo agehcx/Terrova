@@ -1,0 +1,1 @@
+/Users/Chega/Desktop/Croissant/Blockchain/Colossuem26/Terrova/contracts/programs/terrova/target/sbpf-solana-solana/release/libterrova.rlib: /Users/Chega/Desktop/Croissant/Blockchain/Colossuem26/Terrova/contracts/programs/terrova/src/lib.rs
