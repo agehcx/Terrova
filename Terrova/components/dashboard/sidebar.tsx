@@ -35,12 +35,12 @@ export function DashboardSidebar() {
   return (
     <aside className="hidden w-56 shrink-0 border-r border-border bg-card lg:flex lg:flex-col">
       {/* Logo */}
-      <div className="flex h-14 items-center gap-2 border-b border-border px-4">
+      <Link href="/dashboard" className="flex h-14 items-center gap-2 border-b border-border px-4 transition-colors hover:bg-muted/50">
         <div className="flex h-6 w-6 items-center justify-center rounded bg-primary text-xs font-bold text-primary-foreground">
           T
         </div>
         <span className="font-semibold text-foreground">Terrova</span>
-      </div>
+      </Link>
 
       {/* Main nav */}
       <nav className="flex-1 px-2 py-3">

@@ -36,11 +36,17 @@ export function DashboardHeader() {
 
   return (
     <header className="flex h-16 items-center justify-between border-b border-border bg-card px-6">
-      {/* Left: Mobile menu + page title */}
+      {/* Left: Mobile menu + logo + page title */}
       <div className="flex items-center gap-4">
         <Button variant="ghost" size="icon" className="h-9 w-9 lg:hidden">
           <Menu className="h-5 w-5" />
         </Button>
+        <Link href="/dashboard" className="flex items-center gap-2 lg:hidden">
+          <div className="flex h-6 w-6 items-center justify-center rounded bg-primary text-[10px] font-bold text-primary-foreground">
+            T
+          </div>
+        </Link>
+        <div className="h-4 w-px bg-border lg:hidden" />
         <div>
           <h1 className="text-sm font-bold tracking-tight uppercase text-muted-foreground/60">{currentPage}</h1>
         </div>

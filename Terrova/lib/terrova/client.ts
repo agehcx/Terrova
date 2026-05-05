@@ -1,6 +1,7 @@
 import { Program, AnchorProvider, BN } from '@coral-xyz/anchor';
 import { PublicKey, Connection, SystemProgram } from '@solana/web3.js';
 import type { Terrova } from './terrova.types';
+import idl from './terrova.json';
 
 export class TerrovaClient {
   public program: Program<Terrova>;
@@ -10,7 +11,7 @@ export class TerrovaClient {
   // Scaling factor for coordinates (1e7)
   private static COORD_SCALE = 10_000_000;
 
-  constructor(connection: Connection, wallet: any, programId: PublicKey) {
+  constructor(connection: Connection, wallet: any, _programId?: PublicKey) {
     this.connection = connection;
     const provider = new AnchorProvider(
       connection,
@@ -18,14 +19,9 @@ export class TerrovaClient {
       AnchorProvider.defaultOptions()
     );
     this.provider = provider;
-    
-    // In a real app, this IDL would be the generated JSON
-    // We use the types.ts as the source of truth here
-    this.program = new Program<Terrova>(
-      require('./terrova.json'), // We'll need this file or a mock of it
-      programId,
-      provider
-    );
+
+    // Anchor v0.30+: new Program(idl, provider) — programId is embedded in idl.address
+    this.program = new Program<Terrova>(idl as any, provider);
   }
 
   private scaleCoord(val: number): BN {

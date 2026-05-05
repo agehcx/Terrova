@@ -430,7 +430,9 @@ export default function LandingPage() {
         <div className="mx-auto max-w-6xl px-4 py-8">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4 font-mono">
             <div className="flex items-center gap-4">
-              <span className="font-medium text-foreground tracking-tight">Terrova</span>
+              <Link href="/" className="font-medium text-foreground tracking-tight hover:opacity-80 transition-opacity">
+                Terrova
+              </Link>
               <span className="text-border">|</span>
               <span className="flex items-center gap-1.5 text-xs text-muted-foreground uppercase">
                 <SolanaLogo className="h-3 w-3 text-muted-foreground" /> Built on Solana
