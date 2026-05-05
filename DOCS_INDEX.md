@@ -131,6 +131,12 @@ Welcome to Terrova! This index helps you navigate the complete documentation.
   - Configuration options
   - **Best for**: Setting up .env.local
 
+### Rules & Guidelines
+- **[docs/rules/README.md](docs/rules/README.md)** ⭐
+  - Complete project rules and conventions
+  - CI/CD, Coding, Git, Security, Testing, and UI rules
+  - **Best for**: Understanding contribution standards and technical constraints
+
 ### This File
 - **[DOCS_INDEX.md](DOCS_INDEX.md)** (you are here)
   - Navigation guide for all documentation
@@ -364,6 +370,26 @@ A: See **[GETTING_STARTED.md](GETTING_STARTED.md)** - Troubleshooting section
 2. Check [PROJECT_SUMMARY.md](PROJECT_SUMMARY.md) - Next Steps
 3. Create feature branch
 4. Follow coding patterns in [QUICK_REFERENCE.md](QUICK_REFERENCE.md)
+
+---
+
+## 🗺️ Documentation Map
+
+### Core Documents (`/docs`)
+- **[README.md](docs/README.md)**: High-level introduction to Terrova's mission and solution.
+- **[quickstart.md](docs/quickstart.md)**: 4-step guide to connecting a wallet and registering a node.
+- **[BRAND_CI.md](docs/BRAND_CI.md)**: Visual identity, color palette, and design principles (Emerald Green/White Mono).
+- **[SUMMARY.md](docs/SUMMARY.md)**: Table of contents for the documentation site.
+
+### Technical Rules (`/docs/rules`)
+- **[rules/README.md](docs/rules/README.md)**: Overview of all project rules and their priority.
+- **[rules/CI.md](docs/rules/CI.md)**: GitHub Actions workflows, build pipelines, and deployment rules.
+- **[rules/CODING.md](docs/rules/CODING.md)**: TypeScript standards, React patterns, and Solana-specific coding rules.
+- **[rules/FOLDER_STRUCTURE.md](docs/rules/FOLDER_STRUCTURE.md)**: Guide to the modular monorepo and file naming conventions.
+- **[rules/GIT.md](docs/rules/GIT.md)**: Branching strategy, commit message formats, and PR workflows.
+- **[rules/SECURITY.md](docs/rules/SECURITY.md)**: Data validation, secret management, and financial safety rules.
+- **[rules/TESTING.md](docs/rules/TESTING.md)**: Testing philosophy, integration focus, and coverage requirements.
+- **[rules/UI_DESIGN.md](docs/rules/UI_DESIGN.md)**: User experience goals, professional/technical aesthetic, and component behavior.
 
 ---
 
