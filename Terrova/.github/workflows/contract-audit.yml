@@ -1,0 +1,97 @@
+name: Contract Security Audit
+
+on:
+  push:
+    paths:
+      - 'contracts/**'
+  pull_request:
+    paths:
+      - 'contracts/**'
+
+jobs:
+  audit:
+    name: Security Analysis
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: contracts
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Rust
+        uses: dtolnay/rust-action@stable
+
+      - name: Install cargo-audit
+        run: cargo install cargo-audit
+
+      - name: Run cargo audit
+        run: cargo audit
+
+      - name: Install Solana CLI
+        run: |
+          sh -c "$(curl -sSfL https://release.anza.xyz/stable/install)"
+          echo "$HOME/.local/share/solana/install/active_release/bin" >> $GITHUB_PATH
+
+      - name: Install Anchor CLI
+        run: cargo install --git https://github.com/coral-xyz/anchor anchor-cli --locked
+
+      - name: Build for analysis
+        run: anchor build
+
+      - name: Check for common vulnerabilities
+        run: |
+          echo "Checking for common Solana vulnerabilities..."
+          
+          # Check for missing signer checks
+          if grep -r "pub authority" programs/terrova/src/ | grep -v "Signer"; then
+            echo "WARNING: Found authority field without Signer constraint"
+          fi
+          
+          # Check for missing account validation
+          if grep -r "#\[account\]" programs/terrova/src/ | grep -v "constraint"; then
+            echo "INFO: Some accounts may need additional constraints"
+          fi
+          
+          # Check for arithmetic operations without checked math
+          if grep -rE "\+|\-|\*|/" programs/terrova/src/*.rs | grep -v "checked_"; then
+            echo "INFO: Consider using checked arithmetic operations"
+          fi
+          
+          echo "Basic security checks completed"
+
+  clippy:
+    name: Clippy Lints
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: contracts
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Rust
+        uses: dtolnay/rust-action@stable
+        with:
+          components: clippy
+
+      - name: Run Clippy
+        run: cargo clippy --all-targets --all-features -- -D warnings
+
+  fmt:
+    name: Format Check
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: contracts
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Rust
+        uses: dtolnay/rust-action@stable
+        with:
+          components: rustfmt
+
+      - name: Check formatting
+        run: cargo fmt --all -- --check
