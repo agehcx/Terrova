@@ -1,8 +1,8 @@
 "use client"
 
 import { useState, useCallback } from "react"
-import { Map, Marker, Popup, NavigationControl, ScaleControl } from "react-map-gl/mapbox"
-import "mapbox-gl/dist/mapbox-gl.css"
+import { Map, Marker, Popup, NavigationControl, ScaleControl } from "react-map-gl/maplibre"
+import "maplibre-gl/dist/maplibre-gl.css"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -135,9 +135,9 @@ interface NodeMarkerProps {
 
 function NodeMarker({ node, onClick }: NodeMarkerProps) {
   const statusColors = {
-    active: "bg-green-500",
+    active: "bg-primary",
     pending: "bg-yellow-500",
-    inactive: "bg-gray-500",
+    inactive: "bg-slate-500",
   }
 
   return (
@@ -210,18 +210,16 @@ export function NetworkMap({
     [onVerificationSelect]
   )
 
-  // Use a public Mapbox style that doesn't require an access token for demo
-  // In production, you'd use process.env.NEXT_PUBLIC_MAPBOX_TOKEN
-  const mapboxToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN || "demo"
+  // Use Carto's free Positron style with MapLibre to avoid token requirements
+  const mapStyle = "https://basemaps.cartocdn.com/gl/positron-gl-style/style.json"
 
   return (
-    <div className="relative h-full w-full overflow-hidden rounded-xl">
+    <div className="relative h-full w-full overflow-hidden rounded-xl border border-border bg-white">
       <Map
         {...viewState}
         onMove={(evt) => setViewState(evt.viewState)}
         style={{ width: "100%", height: "100%" }}
-        mapStyle="mapbox://styles/mapbox/dark-v11"
-        mapboxAccessToken={mapboxToken}
+        mapStyle={mapStyle}
         attributionControl={false}
       >
         <NavigationControl position="top-right" />
@@ -275,10 +273,10 @@ export function NetworkMap({
                       variant="outline"
                       className={
                         selectedNode.status === "active"
-                          ? "bg-green-500/10 text-green-500"
+                          ? "bg-primary/10 text-primary"
                           : selectedNode.status === "pending"
                           ? "bg-yellow-500/10 text-yellow-500"
-                          : "bg-gray-500/10 text-gray-500"
+                          : "bg-slate-500/10 text-slate-500"
                       }
                     >
                       {selectedNode.status}
@@ -349,11 +347,11 @@ export function NetworkMap({
       </Map>
 
       {/* Map Legend */}
-      <div className="absolute bottom-4 right-4 rounded-lg border border-border bg-background/90 p-3 backdrop-blur-sm">
+      <div className="absolute bottom-4 right-4 rounded-lg border border-border bg-background/95 p-3 shadow-sm backdrop-blur-sm">
         <p className="mb-2 text-xs font-semibold text-foreground">Legend</p>
         <div className="flex flex-col gap-2 text-xs">
           <div className="flex items-center gap-2">
-            <span className="flex h-3 w-3 rounded-full bg-green-500" />
+            <span className="flex h-3 w-3 rounded-full bg-primary" />
             <span className="text-muted-foreground">Active Node</span>
           </div>
           <div className="flex items-center gap-2">
@@ -361,11 +359,11 @@ export function NetworkMap({
             <span className="text-muted-foreground">Pending Node</span>
           </div>
           <div className="flex items-center gap-2">
-            <span className="flex h-3 w-3 rounded-full bg-gray-500" />
+            <span className="flex h-3 w-3 rounded-full bg-slate-500" />
             <span className="text-muted-foreground">Inactive Node</span>
           </div>
           <div className="flex items-center gap-2">
-            <span className="flex h-3 w-3 rounded-full bg-primary" />
+            <span className="flex h-3 w-3 rounded-full bg-primary animate-pulse" />
             <span className="text-muted-foreground">Verification Request</span>
           </div>
         </div>

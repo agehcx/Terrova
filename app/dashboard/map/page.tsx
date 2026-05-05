@@ -10,7 +10,7 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { Signal, MapPin, Filter, RefreshCw } from "lucide-react"
 import { mockNodes, mockVerificationRequests } from "@/components/dashboard/network-map"
 
-// Dynamic import to avoid SSR issues with mapbox-gl
+// Dynamic import to avoid SSR issues with maplibre-gl
 const NetworkMap = dynamic(
   () => import("@/components/dashboard/network-map").then((mod) => mod.NetworkMap),
   {
