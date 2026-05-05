@@ -1,12 +1,46 @@
 {
+  "name": "terrova",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --turbo",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint .",
+    "contract:build": "cd contracts && anchor build",
+    "contract:test": "cd contracts && anchor test",
+    "contract:deploy": "cd contracts && anchor deploy",
+    "contract:deploy:devnet": "cd contracts && anchor deploy --provider.cluster devnet",
+    "contract:deploy:mainnet": "cd contracts && anchor deploy --provider.cluster mainnet-beta"
+  },
   "dependencies": {
     "@coral-xyz/anchor": "^0.30.1",
     "@google/generative-ai": "^0.24.1",
     "@solana/wallet-adapter-base": "^0.9.27",
     "@solana/wallet-adapter-react": "^0.15.39",
     "@solana/wallet-adapter-react-ui": "^0.9.39",
+    "@solana/wallet-adapter-wallets": "^0.19.38",
     "@solana/web3.js": "^1.98.4",
+    "@vercel/analytics": "1.6.1",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "framer-motion": "^12.38.0",
+    "lucide-react": "^0.564.0",
     "mapbox-gl": "^3.23.0",
-    "react-map-gl": "^8.1.1"
+    "next": "16.2.4",
+    "next-themes": "^0.4.6",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-map-gl": "^8.1.1",
+    "tailwind-merge": "^3.3.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.2.0",
+    "@types/node": "^22.19.11",
+    "@types/react": "19.2.14",
+    "@types/react-dom": "19.2.3",
+    "postcss": "^8.5",
+    "tailwindcss": "^4.2.0",
+    "typescript": "5.7.3"
   }
 }
