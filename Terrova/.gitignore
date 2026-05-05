@@ -37,6 +37,10 @@ contracts/programs/**/target/
 contracts/.anchor/
 .anchor/
 
+# Local test validator ledger (created by solana-test-validator)
+contracts/test-ledger/
+test-ledger/
+
 # Anchor test node_modules
 contracts/node_modules/
 
