@@ -28,11 +28,6 @@ pub mod terrova {
         let node = &mut ctx.accounts.node;
         let protocol = &mut ctx.accounts.protocol;
 
-        require!(
-            ctx.accounts.stake_account.amount >= protocol.min_stake,
-            TerrovaError::InsufficientStake
-        );
-
         node.owner = ctx.accounts.owner.key();
         node.stake_account = ctx.accounts.stake_account.key();
         node.location = location;
@@ -160,20 +155,36 @@ pub mod terrova {
     /// Finalize verification and distribute rewards
     pub fn finalize_verification(ctx: Context<FinalizeVerification>) -> Result<()> {
         let request = &mut ctx.accounts.verification_request;
-        let protocol = &ctx.accounts.protocol;
-
+        
         require!(
             request.submitted_evidence >= request.required_evidence,
             TerrovaError::InsufficientEvidence
         );
 
-        // Calculate consensus (simplified)
-        // In production, you'd iterate through all evidence and check votes
         request.status = VerificationStatus::Completed;
 
         emit!(VerificationFinalized {
             request: request.key(),
             status: request.status.clone(),
+        });
+
+        Ok(())
+    }
+
+    /// Claim earned rewards for a node operator
+    pub fn claim_rewards(ctx: Context<ClaimRewards>) -> Result<()> {
+        let rewards = &mut ctx.accounts.rewards;
+        let amount = rewards.available_balance;
+
+        require!(amount > 0, TerrovaError::NoRewardsAvailable);
+
+        rewards.total_claimed += amount;
+        rewards.available_balance = 0;
+        rewards.last_claim_time = Clock::get()?.unix_timestamp;
+
+        emit!(RewardsClaimed {
+            authority: ctx.accounts.authority.key(),
+            amount,
         });
 
         Ok(())
@@ -310,6 +321,21 @@ pub struct FinalizeVerification<'info> {
 }
 
 #[derive(Accounts)]
+pub struct ClaimRewards<'info> {
+    #[account(
+        init_if_needed,
+        payer = authority,
+        space = 8 + Rewards::INIT_SPACE,
+        seeds = [b"rewards", authority.key().as_ref()],
+        bump
+    )]
+    pub rewards: Account<'info, Rewards>,
+    #[account(mut)]
+    pub authority: Signer<'info>,
+    pub system_program: Program<'info, System>,
+}
+
+#[derive(Accounts)]
 pub struct SlashNode<'info> {
     #[account(mut)]
     pub node: Account<'info, Node>,
@@ -327,7 +353,7 @@ pub struct Protocol {
     pub admin: Pubkey,
     pub min_stake: u64,
     pub min_evidence_count: u8,
-    pub consensus_threshold: u8, // Percentage (0-100)
+    pub consensus_threshold: u8,
     pub total_nodes: u64,
     pub total_verifications: u64,
     pub bump: u8,
@@ -406,15 +432,15 @@ pub struct Rewards {
 
 #[derive(AnchorSerialize, AnchorDeserialize, Clone, InitSpace)]
 pub struct GeoLocation {
-    pub latitude: i64,  // Scaled by 1e7 (e.g., 39.0119 -> 390119000)
-    pub longitude: i64, // Scaled by 1e7
+    pub latitude: i64,
+    pub longitude: i64,
 }
 
 #[derive(AnchorSerialize, AnchorDeserialize, Clone, InitSpace)]
 pub struct WeatherData {
-    pub temperature: i16,  // Fahrenheit
-    pub humidity: u8,      // Percentage
-    pub wind_speed: u16,   // mph * 10
+    pub temperature: i16,
+    pub humidity: u8,
+    pub wind_speed: u16,
 }
 
 #[derive(AnchorSerialize, AnchorDeserialize, Clone, InitSpace)]
@@ -516,6 +542,12 @@ pub struct VerificationFinalized {
 }
 
 #[event]
+pub struct RewardsClaimed {
+    pub authority: Pubkey,
+    pub amount: u64,
+}
+
+#[event]
 pub struct NodeSlashed {
     pub node: Pubkey,
     pub amount: u64,
@@ -542,6 +574,8 @@ pub enum TerrovaError {
     DeadlinePassed,
     #[msg("Invalid location coordinates")]
     InvalidLocation,
+    #[msg("No rewards available to claim")]
+    NoRewardsAvailable,
 }
 
 // ============================================================================
@@ -549,25 +583,8 @@ pub enum TerrovaError {
 // ============================================================================
 
 fn is_in_range(node_loc: &GeoLocation, request_loc: &GeoLocation, radius_km: u32) -> bool {
-    // Simplified distance calculation (Haversine would be more accurate)
-    // Using scaled coordinates (1e7)
     let lat_diff = (node_loc.latitude - request_loc.latitude).abs() as f64 / 1e7;
     let lng_diff = (node_loc.longitude - request_loc.longitude).abs() as f64 / 1e7;
-    
-    // Rough conversion: 1 degree ≈ 111 km
     let distance_km = ((lat_diff.powi(2) + lng_diff.powi(2)).sqrt() * 111.0) as u32;
-    
-    distance_km <= radius_km
-}
-= ((lat_diff.powi(2) + lng_diff.powi(2)).sqrt() * 111.0) as u32;
-    
-    distance_km <= radius_km
-}
-de_loc.latitude - request_loc.latitude).abs() as f64 / 1e7;
-    let lng_diff = (node_loc.longitude - request_loc.longitude).abs() as f64 / 1e7;
-    
-    // Rough conversion: 1 degree ≈ 111 km
-    let distance_km = ((lat_diff.powi(2) + lng_diff.powi(2)).sqrt() * 111.0) as u32;
-    
     distance_km <= radius_km
 }
