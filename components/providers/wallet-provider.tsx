@@ -1,12 +1,9 @@
 "use client"
 
 import { useMemo, type ReactNode } from "react"
-import {
-  ConnectionProvider,
-  WalletProvider as SolanaWalletProvider,
-} from "@solana/wallet-adapter-react"
-import { WalletModalProvider } from "@solana/wallet-adapter-react-ui"
-import { PhantomWalletAdapter, SolflareWalletAdapter } from "@solana/wallet-adapter-wallets"
+import { PrivyProvider } from "@privy-io/react-auth"
+import { toSolanaWalletConnectors } from "@privy-io/react-auth/solana"
+import { ConnectionProvider } from "@solana/wallet-adapter-react"
 import { clusterApiUrl } from "@solana/web3.js"
 
 // Import wallet adapter styles
@@ -17,22 +14,41 @@ interface WalletProviderProps {
 }
 
 export function WalletProvider({ children }: WalletProviderProps) {
-  // Use devnet for development, mainnet-beta for production
+  // Use devnet for development
   const endpoint = useMemo(() => clusterApiUrl("devnet"), [])
 
-  const wallets = useMemo(
-    () => [
-      new PhantomWalletAdapter(),
-      new SolflareWalletAdapter(),
-    ],
-    []
-  )
+  // Configure Solana connectors for Privy to support both social and external wallets
+  const solanaConnectors = useMemo(() => toSolanaWalletConnectors({
+    shouldAutoConnect: true,
+  }), [])
+
+  const privyAppId = process.env.NEXT_PUBLIC_PRIVY_APP_ID || "cm0zh2m6p019m1234567890" // Placeholder
 
   return (
-    <ConnectionProvider endpoint={endpoint}>
-      <SolanaWalletProvider wallets={wallets} autoConnect>
-        <WalletModalProvider>{children}</WalletModalProvider>
-      </SolanaWalletProvider>
-    </ConnectionProvider>
+    <PrivyProvider
+      appId={privyAppId}
+      config={{
+        appearance: {
+          theme: 'dark',
+          accentColor: '#14b8a6', // teal-500 matching Terrova brand
+          showWalletLoginFirst: false,
+        },
+        // Enable Solana support
+        externalWallets: {
+          solana: {
+            connectors: solanaConnectors,
+          },
+        },
+        embeddedWallets: {
+          createOnLogin: 'users-without-wallets',
+          requireUserPasswordOnCreate: false,
+        },
+        loginMethods: ['google', 'email', 'apple', 'wallet'],
+      }}
+    >
+      <ConnectionProvider endpoint={endpoint}>
+        {children}
+      </ConnectionProvider>
+    </PrivyProvider>
   )
 }

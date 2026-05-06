@@ -72,7 +72,7 @@ const rewardStats = {
 }
 
 export default function RewardsPage() {
-  const { connected, publicKey } = useWallet()
+  const { connected, publicKey } = useTerrovaWallet()
   const { evidences, nodes } = useBlockchain()
   const pubkeyStr = publicKey?.toBase58() || ""
   

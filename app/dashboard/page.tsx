@@ -72,7 +72,7 @@ function MetricCard({ metric }: { metric: Metric }) {
 }
 
 export default function DashboardPage() {
-  const { connected, publicKey } = useWallet()
+  const { connected, publicKey } = useTerrovaWallet()
   const { verifications, evidences, nodes } = useBlockchain()
 
   // Dynamic calculations

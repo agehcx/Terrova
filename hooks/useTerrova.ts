@@ -1,11 +1,12 @@
 import { useCallback, useEffect, useState } from 'react';
-import { useConnection, useWallet } from '@solana/wallet-adapter-react';
+import { useConnection } from '@solana/wallet-adapter-react';
 import { PublicKey } from '@solana/web3.js';
 import { TerrovaClient } from '@/lib/terrova/client';
+import { useTerrovaWallet } from './useTerrovaWallet';
 
 export function useTerrova() {
   const { connection } = useConnection();
-  const wallet = useWallet();
+  const wallet = useTerrovaWallet();
   const [client, setClient] = useState<TerrovaClient | null>(null);
   const [isInitialized, setIsInitialized] = useState(false);
   const [error, setError] = useState<string | null>(null);

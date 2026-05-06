@@ -3,7 +3,7 @@
 import { useState } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { useWallet } from "@solana/wallet-adapter-react"
+import { useTerrovaWallet } from "@/hooks/useTerrovaWallet"
 import { Menu, Bell, ExternalLink, LogOut, Wallet as WalletIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { 
@@ -14,7 +14,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuLabel
 } from "@/components/ui/dropdown-menu"
-import { WalletConnectModal } from "./wallet-modal"
 import { cn } from "@/lib/utils"
 
 const pageNames: Record<string, string> = {
@@ -29,8 +28,7 @@ const pageNames: Record<string, string> = {
 
 export function DashboardHeader() {
   const pathname = usePathname()
-  const { publicKey, connected, disconnect, wallet } = useWallet()
-  const [modalOpen, setModalOpen] = useState(false)
+  const { publicKey, connected, disconnect, login, walletName, walletIcon } = useTerrovaWallet()
 
   const currentPage = pageNames[pathname] || "Dashboard"
 
@@ -74,19 +72,22 @@ export function DashboardHeader() {
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="sm" className="h-9 gap-2.5 rounded-full border-primary/20 bg-primary/5 hover:bg-primary/10 transition-colors">
                 <div className="h-5 w-5 rounded-full bg-primary/20 flex items-center justify-center">
-                  {wallet?.adapter.icon ? (
-                    <img src={wallet.adapter.icon} alt="" className="h-3 w-3" />
+                  {walletIcon ? (
+                    <img src={walletIcon} alt="" className="h-3 w-3" />
                   ) : (
                     <WalletIcon className="h-3 w-3 text-primary" />
                   )}
                 </div>
-                <span className="font-mono text-xs font-bold">
-                  {publicKey.toBase58().slice(0, 4)}...{publicKey.toBase58().slice(-4)}
-                </span>
+                <div className="flex flex-col items-start leading-none">
+                  <span className="text-[8px] uppercase font-black text-muted-foreground/80 tracking-tighter">{walletName}</span>
+                  <span className="font-mono text-xs font-bold">
+                    {publicKey.toBase58().slice(0, 4)}...{publicKey.toBase58().slice(-4)}
+                  </span>
+                </div>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56 mt-2">
-              <DropdownMenuLabel className="text-[10px] uppercase tracking-widest text-muted-foreground">Connected Wallet</DropdownMenuLabel>
+              <DropdownMenuLabel className="text-[10px] uppercase tracking-widest text-muted-foreground">Connected Account</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem className="flex items-center gap-2 cursor-pointer py-2.5" onClick={() => window.open(`https://solscan.io/account/${publicKey.toBase58()}?cluster=devnet`, '_blank')}>
                 <ExternalLink className="h-4 w-4 text-muted-foreground" />
@@ -94,7 +95,7 @@ export function DashboardHeader() {
               </DropdownMenuItem>
               <DropdownMenuItem className="flex items-center gap-2 cursor-pointer py-2.5 text-destructive focus:text-destructive" onClick={() => disconnect()}>
                 <LogOut className="h-4 w-4" />
-                <span className="text-sm font-medium">Disconnect</span>
+                <span className="text-sm font-medium">Log out</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -102,14 +103,12 @@ export function DashboardHeader() {
           <Button 
             size="sm" 
             className="h-9 gap-2 rounded-full font-bold shadow-lg shadow-primary/20 px-5"
-            onClick={() => setModalOpen(true)}
+            onClick={() => login()}
           >
             <WalletIcon className="h-3.5 w-3.5" />
-            Connect Wallet
+            Connect / Sign In
           </Button>
         )}
-
-        <WalletConnectModal open={modalOpen} onOpenChange={setModalOpen} />
       </div>
     </header>
   )

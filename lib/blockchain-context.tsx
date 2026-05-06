@@ -1,9 +1,9 @@
 "use client"
 
 import React, { createContext, useContext, useState, ReactNode, useEffect, useCallback } from "react"
-import { useWallet } from "@solana/wallet-adapter-react"
 import { PublicKey } from "@solana/web3.js"
 import { useTerrova } from "@/hooks/useTerrova"
+import { useTerrovaWallet } from "@/hooks/useTerrovaWallet"
 import { seedNodes, seedVerificationRequests, seedEvidence } from "./terrova/seed-data"
 
 // Types matching our Smart Contract & UI
