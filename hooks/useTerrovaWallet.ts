@@ -1,6 +1,7 @@
 "use client"
 
-import { usePrivy, useSolanaWallets } from "@privy-io/react-auth"
+import { usePrivy } from "@privy-io/react-auth"
+import { useWallets, useSignTransaction } from "@privy-io/react-auth/solana"
 import { useWallet } from "@solana/wallet-adapter-react"
 import { useMemo } from "react"
 import { PublicKey, Transaction, VersionedTransaction } from "@solana/web3.js"
@@ -16,17 +17,18 @@ export interface TerrovaWallet {
 }
 
 export function useTerrovaWallet(): TerrovaWallet {
-  const { user, authenticated, logout: privyLogout, login: privyLogin } = usePrivy()
-  const { wallets: privyWallets } = useSolanaWallets()
+  const { authenticated, logout: privyLogout, login: privyLogin } = usePrivy()
+  const { wallets: privyWallets } = useWallets()
+  const { signTransaction: privySignTransaction } = useSignTransaction()
   const solanaWalletAdapter = useWallet()
 
-  // Get the Privy Solana wallet (either embedded or connected via Privy)
+  // Get the primary Solana wallet from Privy (embedded or connected)
   const privySolanaWallet = useMemo(() => 
-    privyWallets.find(w => w.chainType === "solana"), 
+    privyWallets.find(w => w.walletClientType === "privy") || privyWallets[0] || null, 
   [privyWallets])
 
   const publicKey = useMemo(() => {
-    // Priority: 1. External Wallet Adapter, 2. Privy Embedded/Connected Wallet
+    // Priority: 1. External Wallet Adapter, 2. Privy Wallet
     if (solanaWalletAdapter.publicKey) return solanaWalletAdapter.publicKey
     if (privySolanaWallet?.address) {
       try {
@@ -70,11 +72,20 @@ export function useTerrovaWallet(): TerrovaWallet {
     }
     
     if (privySolanaWallet) {
-      const provider = await privySolanaWallet.getPublicKey() // This is not correct for signing
-      // Using Privy's wallet interface
-      // @ts-ignore - Privy's Solana interface might vary based on version
-      const solanaInterface = await privySolanaWallet.makeInterface();
-      return await solanaInterface.signTransaction(transaction);
+      // Serialize transaction to Uint8Array for Privy
+      const serialized = transaction.serialize()
+      
+      const { signedTransaction } = await privySignTransaction({
+        transaction: serialized,
+        wallet: privySolanaWallet,
+      })
+
+      // Deserialize back to the correct type
+      if (transaction instanceof VersionedTransaction) {
+        return VersionedTransaction.deserialize(signedTransaction) as unknown as T
+      } else {
+        return Transaction.from(signedTransaction) as unknown as T
+      }
     }
 
     throw new Error("Wallet not connected or does not support signing")

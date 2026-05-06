@@ -3,6 +3,8 @@ import { DashboardSidebar } from "@/components/dashboard/sidebar"
 import { DashboardHeader } from "@/components/dashboard/header"
 import { BlockchainProvider } from "@/lib/blockchain-context"
 
+export const dynamic = "force-dynamic"
+
 export default function DashboardLayout({
   children,
 }: {

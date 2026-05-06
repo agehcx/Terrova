@@ -22,7 +22,7 @@ export function WalletProvider({ children }: WalletProviderProps) {
     shouldAutoConnect: true,
   }), [])
 
-  const privyAppId = process.env.NEXT_PUBLIC_PRIVY_APP_ID || "cm0zh2m6p019m1234567890" // Placeholder
+  const privyAppId = process.env.NEXT_PUBLIC_PRIVY_APP_ID || "cm1234567890abcdefghijk"
 
   return (
     <PrivyProvider
