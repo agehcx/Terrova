@@ -275,6 +275,7 @@ pnpm dev
 ### Medium Term (1 month)
 - [ ] Mobile-responsive improvements
 - [ ] Advanced filtering and search
+- [ ] Implement Privy/Custodial wallets for Farmer onboarding (Web2 social login)
 - [ ] Real-time notifications via websockets
 - [ ] Historical data analytics
 - [ ] Node performance dashboard
