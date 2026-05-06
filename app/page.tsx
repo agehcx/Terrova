@@ -144,75 +144,76 @@ export default function LandingPage() {
       </nav>
 
       <main className="relative z-10 pt-14">
-        {/* Hero */}
-        <section className="relative min-h-[90vh] flex flex-col justify-center pt-24 pb-20 md:pt-32 md:pb-32 border-b border-border bg-background snap-start snap-always scroll-mt-14">
-          <div className="mx-auto max-w-6xl px-4">
-            <motion.div
-              initial={{ opacity: 0, x: -50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, ease: "easeOut" }}
-              className="flex flex-col max-w-3xl"
-            >
-              <div className="inline-flex items-center gap-2 mb-6">
-                <span className="h-2 w-2 rounded-full bg-primary animate-pulse" />
-                <span className="text-xs text-primary tracking-widest uppercase">Verifiable evidence for crop-risk decisions</span>
-              </div>
+        {/* Hero & Stakes Band Combined */}
+        <section className="relative h-[calc(100vh-3.5rem)] flex flex-col border-b border-border bg-background snap-start snap-always scroll-mt-14">
+          <div className="flex-grow flex flex-col justify-center py-8">
+            <div className="mx-auto max-w-6xl px-4 w-full">
+              <motion.div
+                initial={{ opacity: 0, x: -50 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.6, ease: "easeOut" }}
+                className="flex flex-col max-w-3xl"
+              >
+                <div className="inline-flex items-center gap-2 mb-4">
+                  <span className="h-2 w-2 rounded-full bg-primary animate-pulse" />
+                  <span className="text-[10px] md:text-xs text-primary tracking-widest uppercase font-mono">Verifiable evidence for crop-risk decisions</span>
+                </div>
 
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-medium tracking-tight leading-[1.1] text-foreground">
-                When crop loss happens, verification should not take weeks.
-              </h1>
+                <h1 className="text-3xl md:text-5xl lg:text-6xl font-medium tracking-tight leading-[1.1] text-foreground">
+                  When crop loss happens, verification should not take weeks.
+                </h1>
 
-              <p className="mt-6 text-lg md:text-xl text-muted-foreground leading-relaxed max-w-2xl">
-                Terrova turns field evidence into a shared, objective verification layer for insurers, farmers, and data nodes.
-              </p>
+                <p className="mt-4 text-base md:text-xl text-muted-foreground leading-relaxed max-w-2xl font-mono">
+                  Terrova turns field evidence into a shared, objective verification layer for insurers, farmers, and data nodes.
+                </p>
 
-              <div className="mt-10 flex flex-wrap items-center gap-4">
-                <Link href="/dashboard">
-                  <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                    <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-none h-12 px-8 font-medium">
-                      View Demo Flow
-                    </Button>
-                  </motion.div>
-                </Link>
-                <a href="#evidence">
-                  <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                    <Button size="lg" variant="outline" className="rounded-none h-12 px-8 font-medium border-border hover:bg-secondary text-foreground">
-                      See Verification Model
-                    </Button>
-                  </motion.div>
-                </a>
-              </div>
-            </motion.div>
-          </div>
-        </section>
-
-        {/* Stakes Band */}
-        <motion.section
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          className="border-b border-border bg-secondary/50 snap-start scroll-mt-14"
-        >
-          <div className="mx-auto max-w-6xl">
-            <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-border font-mono">
-              <motion.div {...fadeInUp} className="p-8">
-                <div className="text-sm text-destructive mb-2 uppercase tracking-wide">System Delay</div>
-                <div className="text-2xl text-foreground mb-1">45+ Days</div>
-                <div className="text-sm text-muted-foreground">Average time to deploy field adjusters and settle agricultural claims.</div>
-              </motion.div>
-              <motion.div {...fadeInUp} transition={{ delay: 0.1 }} className="p-8">
-                <div className="text-sm text-destructive mb-2 uppercase tracking-wide">Data Fragmentation</div>
-                <div className="text-2xl text-foreground mb-1">Unverifiable Sources</div>
-                <div className="text-sm text-muted-foreground">Drone imagery and ground reports lack cryptographic proof of location and time.</div>
-              </motion.div>
-              <motion.div {...fadeInUp} transition={{ delay: 0.2 }} className="p-8">
-                <div className="text-sm text-destructive mb-2 uppercase tracking-wide">Trust Deficit</div>
-                <div className="text-2xl text-foreground mb-1">Subjective Outcomes</div>
-                <div className="text-sm text-muted-foreground">Manual assessment leads to disputes, increasing overhead for insurers and friction for farmers.</div>
+                <div className="mt-8 flex flex-wrap items-center gap-4">
+                  <Link href="/dashboard">
+                    <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                      <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-none h-11 px-8 font-medium">
+                        View Demo Flow
+                      </Button>
+                    </motion.div>
+                  </Link>
+                  <a href="#evidence">
+                    <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                      <Button size="lg" variant="outline" className="rounded-none h-11 px-8 font-medium border-border hover:bg-secondary text-foreground">
+                        See Verification Model
+                      </Button>
+                    </motion.div>
+                  </a>
+                </div>
               </motion.div>
             </div>
           </div>
-        </motion.section>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="border-t border-border bg-secondary/30 w-full"
+          >
+            <div className="mx-auto max-w-6xl">
+              <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-border font-mono">
+                <div className="p-5 md:p-8">
+                  <div className="text-[10px] text-destructive mb-1 uppercase tracking-wider font-bold">System Delay</div>
+                  <div className="text-xl md:text-2xl text-foreground mb-1">45+ Days</div>
+                  <div className="text-[10px] text-muted-foreground leading-tight">Average time to deploy field adjusters and settle agricultural claims.</div>
+                </div>
+                <div className="p-5 md:p-8">
+                  <div className="text-[10px] text-destructive mb-1 uppercase tracking-wider font-bold">Data Fragmentation</div>
+                  <div className="text-xl md:text-2xl text-foreground mb-1">Unverifiable Sources</div>
+                  <div className="text-[10px] text-muted-foreground leading-tight">Drone imagery and ground reports lack cryptographic proof of location and time.</div>
+                </div>
+                <div className="p-5 md:p-8">
+                  <div className="text-[10px] text-destructive mb-1 uppercase tracking-wider font-bold">Trust Deficit</div>
+                  <div className="text-xl md:text-2xl text-foreground mb-1">Subjective Outcomes</div>
+                  <div className="text-[10px] text-muted-foreground leading-tight">Manual assessment leads to disputes, increasing overhead for insurers.</div>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        </section>
 
         {/* The 4-Step Flow */}
         <section id="flow" className="py-24 min-h-[90vh] flex flex-col justify-center border-b border-border bg-background snap-start snap-always scroll-mt-14">
@@ -382,10 +383,8 @@ export default function LandingPage() {
               ))}
             </motion.div>
           </div>
-        </section>
-
-        {/* Dashboard Preview & Final CTA */}
-        <section className="py-24 min-h-[90vh] flex flex-col justify-center bg-surface relative overflow-hidden snap-start snap-always scroll-mt-14">
+        </section>        {/* Dashboard Preview & Final CTA & Footer */}
+        <section className="relative min-h-screen flex flex-col justify-between bg-surface overflow-hidden snap-start snap-always scroll-mt-14">
           {/* Animated Background Element */}
           <motion.div
             animate={{
@@ -397,12 +396,12 @@ export default function LandingPage() {
             className="absolute -top-1/2 -right-1/4 w-full h-full bg-primary/20 rounded-full blur-[120px] pointer-events-none"
           />
 
-          <div className="mx-auto max-w-4xl px-4 text-center relative z-10">
+          <div className="flex-grow flex flex-col justify-center py-24 px-4 text-center relative z-10">
             <motion.div
               initial={{ opacity: 0, scale: 0.8 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
-              className="inline-flex items-center gap-2 border border-border bg-background px-3 py-1 mb-8"
+              className="inline-flex items-center gap-2 border border-border bg-background px-3 py-1 mb-8 mx-auto"
             >
               <span className="h-1.5 w-1.5 rounded-full bg-primary" />
               <span className="text-xs text-foreground uppercase font-mono tracking-tighter">Devnet MVP Live</span>
@@ -422,31 +421,31 @@ export default function LandingPage() {
               </motion.div>
             </Link>
           </div>
+
+          {/* Footer */}
+          <footer className="border-t border-border bg-background relative z-10 w-full">
+            <div className="mx-auto max-w-6xl px-4 py-8">
+              <div className="flex flex-col md:flex-row items-center justify-between gap-4 font-mono">
+                <div className="flex items-center gap-4">
+                  <Link href="/" className="font-medium text-foreground tracking-tight hover:opacity-80 transition-opacity">
+                    Terrova
+                  </Link>
+                  <span className="text-border">|</span>
+                  <span className="flex items-center gap-1.5 text-xs text-muted-foreground uppercase">
+                    <SolanaLogo className="h-3 w-3 text-muted-foreground" /> Built on Solana
+                  </span>
+                </div>
+
+                <div className="flex items-center gap-6 text-sm font-medium text-muted-foreground">
+                  <a href="https://terrova.gitbook.io/terrova-docs/" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">Documentation</a>
+                  <a href="https://github.com/terrova" className="hover:text-foreground transition-colors">GitHub</a>
+                  <span className="hover:text-foreground transition-colors cursor-pointer">Privacy</span>
+                </div>
+              </div>
+            </div>
+          </footer>
         </section>
       </main>
-
-      {/* Footer */}
-      <footer className="border-t border-border bg-background relative z-10">
-        <div className="mx-auto max-w-6xl px-4 py-8">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4 font-mono">
-            <div className="flex items-center gap-4">
-              <Link href="/" className="font-medium text-foreground tracking-tight hover:opacity-80 transition-opacity">
-                Terrova
-              </Link>
-              <span className="text-border">|</span>
-              <span className="flex items-center gap-1.5 text-xs text-muted-foreground uppercase">
-                <SolanaLogo className="h-3 w-3 text-muted-foreground" /> Built on Solana
-              </span>
-            </div>
-
-            <div className="flex items-center gap-6 text-sm font-medium text-muted-foreground">
-              <a href="https://terrova.gitbook.io/terrova-docs/" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">Documentation</a>
-              <a href="https://github.com/terrova" className="hover:text-foreground transition-colors">GitHub</a>
-              <span className="hover:text-foreground transition-colors cursor-pointer">Privacy</span>
-            </div>
-          </div>
-        </div>
-      </footer>
     </div>
   )
 }
