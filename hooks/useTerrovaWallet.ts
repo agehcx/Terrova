@@ -3,7 +3,7 @@
 import { usePrivy } from "@privy-io/react-auth"
 import { useWallets, useSignTransaction } from "@privy-io/react-auth/solana"
 import { useWallet } from "@solana/wallet-adapter-react"
-import { useMemo } from "react"
+import { useMemo, useCallback } from "react"
 import { PublicKey, Transaction, VersionedTransaction } from "@solana/web3.js"
 
 export interface TerrovaWallet {
@@ -66,7 +66,7 @@ export function useTerrovaWallet(): TerrovaWallet {
     return null
   }, [solanaWalletAdapter.wallet])
 
-  const signTransaction = async <T extends Transaction | VersionedTransaction>(transaction: T): Promise<T> => {
+  const signTransaction = useCallback(async <T extends Transaction | VersionedTransaction>(transaction: T): Promise<T> => {
     if (solanaWalletAdapter.signTransaction) {
       return await solanaWalletAdapter.signTransaction(transaction)
     }
@@ -89,7 +89,7 @@ export function useTerrovaWallet(): TerrovaWallet {
     }
 
     throw new Error("Wallet not connected or does not support signing")
-  }
+  }, [solanaWalletAdapter.signTransaction, privySolanaWallet, privySignTransaction])
 
   return {
     publicKey,

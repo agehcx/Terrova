@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { useWallet } from "@solana/wallet-adapter-react"
+import { useTerrovaWallet } from "@/hooks/useTerrovaWallet"
 import { useBlockchain } from "@/lib/blockchain-context"
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"

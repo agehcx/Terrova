@@ -11,6 +11,8 @@ export function useTerrova() {
   const [isInitialized, setIsInitialized] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const walletPublicKeyStr = wallet.publicKey?.toBase58();
+
   useEffect(() => {
     if (!wallet.publicKey || !wallet.signTransaction) {
       setClient(null);
@@ -31,7 +33,8 @@ export function useTerrova() {
       setError(err instanceof Error ? err.message : 'Failed to initialize Terrova client');
       setIsInitialized(false);
     }
-  }, [wallet.publicKey, wallet.signTransaction, connection]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [walletPublicKeyStr, connection]);
 
   const registerNode = useCallback(
     async (latitude: number, longitude: number, coverageRadiusKm: number) => {
