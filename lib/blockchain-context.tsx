@@ -5,6 +5,7 @@ import { PublicKey } from "@solana/web3.js"
 import { useTerrova } from "@/hooks/useTerrova"
 import { useTerrovaWallet } from "@/hooks/useTerrovaWallet"
 import { seedNodes, seedVerificationRequests, seedEvidence } from "./terrova/seed-data"
+import { useWallet } from "@solana/wallet-adapter-react"
 
 // Types matching our Smart Contract & UI
 export interface GeoLocation {
@@ -66,7 +67,7 @@ interface BlockchainContextType {
 const BlockchainContext = createContext<BlockchainContextType | undefined>(undefined)
 
 export function BlockchainProvider({ children }: { children: ReactNode }) {
-  const { publicKey, connected } = useWallet()
+  const { publicKey, connected } = useTerrovaWallet()
   const { client, isInitialized, registerNode: contractRegister, submitEvidence: contractSubmit, createVerificationRequest: contractCreate } = useTerrova()
   
   const [verifications, setVerifications] = useState<VerificationRequest[]>([])

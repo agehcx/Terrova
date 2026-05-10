@@ -98,9 +98,7 @@ export default function LandingPage() {
       <nav className="fixed top-0 left-0 right-0 z-50 border-b border-border bg-background/90 backdrop-blur-md">
         <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4">
           <Link href="/" className="flex items-center gap-2 font-semibold tracking-tight">
-            <div className="flex h-6 w-6 items-center justify-center bg-foreground text-background">
-              <span className="text-xs font-bold">TV</span>
-            </div>
+            <img src="/logo.png" alt="Terrova Logo" className="h-8 w-8 object-contain" />
             <span>Terrova</span>
           </Link>
 

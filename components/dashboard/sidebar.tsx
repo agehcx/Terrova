@@ -36,9 +36,7 @@ export function DashboardSidebar() {
     <aside className="hidden w-56 shrink-0 border-r border-border bg-card lg:flex lg:flex-col">
       {/* Logo */}
       <Link href="/dashboard" className="flex h-14 items-center gap-2 border-b border-border px-4 transition-colors hover:bg-muted/50">
-        <div className="flex h-6 w-6 items-center justify-center rounded bg-primary text-xs font-bold text-primary-foreground">
-          T
-        </div>
+        <img src="/logo.png" alt="Terrova Logo" className="h-8 w-8 object-contain" />
         <span className="font-semibold text-foreground">Terrova</span>
       </Link>
 

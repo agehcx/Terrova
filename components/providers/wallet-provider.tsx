@@ -3,7 +3,7 @@
 import { useMemo, type ReactNode } from "react"
 import { PrivyProvider } from "@privy-io/react-auth"
 import { toSolanaWalletConnectors } from "@privy-io/react-auth/solana"
-import { ConnectionProvider } from "@solana/wallet-adapter-react"
+import { ConnectionProvider, WalletProvider as SolanaWalletProvider } from "@solana/wallet-adapter-react"
 import { clusterApiUrl } from "@solana/web3.js"
 
 // Import wallet adapter styles
@@ -22,7 +22,7 @@ export function WalletProvider({ children }: WalletProviderProps) {
     shouldAutoConnect: true,
   }), [])
 
-  const privyAppId = process.env.NEXT_PUBLIC_PRIVY_APP_ID || "cm1234567890abcdefghijk"
+  const privyAppId = process.env.NEXT_PUBLIC_PRIVY_APP_ID as string
 
   return (
     <PrivyProvider
@@ -47,7 +47,9 @@ export function WalletProvider({ children }: WalletProviderProps) {
       }}
     >
       <ConnectionProvider endpoint={endpoint}>
-        {children}
+        <SolanaWalletProvider wallets={[]}>
+          {children}
+        </SolanaWalletProvider>
       </ConnectionProvider>
     </PrivyProvider>
   )
