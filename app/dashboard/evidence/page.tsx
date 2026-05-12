@@ -197,14 +197,29 @@ export default function EvidencePage() {
           <h1 className="text-2xl font-bold text-foreground">Evidence Management</h1>
           <p className="text-muted-foreground">Submit and track evidence for verification requests</p>
         </div>
-        <Dialog open={isSubmitDialogOpen} onOpenChange={setIsSubmitDialogOpen}>
-          <DialogTrigger asChild>
-            <Button className="gap-2" disabled={!connected}>
-              <Upload className="h-4 w-4" />
-              Submit Evidence
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-lg">
+        <div className="flex items-center gap-3">
+          <Button 
+            variant="outline" 
+            onClick={() => {
+              setSelectedVerificationPubkey("mock-vrf-4521")
+              setLat("38.5234")
+              setLng("-98.7821")
+              setTemp("75")
+              setHumidity("40")
+              setWind("10")
+              setIsSubmitDialogOpen(true)
+            }}
+          >
+            Quick Mock Data
+          </Button>
+          <Dialog open={isSubmitDialogOpen} onOpenChange={setIsSubmitDialogOpen}>
+            <DialogTrigger asChild>
+              <Button className="bg-[#a7e2c3] text-black hover:bg-[#8cd1ac] font-medium gap-2 border-0" disabled={!connected}>
+                <Upload className="h-4 w-4" />
+                Submit Evidence
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-lg">
             <DialogHeader>
               <DialogTitle>Submit Evidence</DialogTitle>
               <DialogDescription>
@@ -310,7 +325,7 @@ export default function EvidencePage() {
               </div>
 
               <Button
-                className="w-full gap-2"
+                className="w-full gap-2 bg-[#a7e2c3] text-black hover:bg-[#8cd1ac] font-medium border-0"
                 onClick={handleSubmit}
                 disabled={isSubmitting || !selectedVerificationPubkey || !lat || !lng}
               >

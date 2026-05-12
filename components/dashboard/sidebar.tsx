@@ -1,5 +1,6 @@
 "use client"
 
+import React from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
@@ -10,8 +11,6 @@ import {
   FileCheck,
   Server,
   Coins,
-  Settings,
-  FileText,
   ExternalLink,
 } from "lucide-react"
 
@@ -24,10 +23,7 @@ const mainNav = [
   { name: "Rewards", href: "/dashboard/rewards", icon: Coins },
 ]
 
-const secondaryNav = [
-  { name: "Settings", href: "/dashboard/settings", icon: Settings },
-  { name: "Docs", href: "/docs", icon: FileText },
-]
+const secondaryNav: { name: string; href: string; icon: React.ElementType }[] = []
 
 export function DashboardSidebar() {
   const pathname = usePathname()
