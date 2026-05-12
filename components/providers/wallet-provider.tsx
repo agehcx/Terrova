@@ -40,8 +40,8 @@ export function WalletProvider({ children }: WalletProviderProps) {
           },
         },
         embeddedWallets: {
-          createOnLogin: 'users-without-wallets',
-          requireUserPasswordOnCreate: false,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          ...(({ createOnLogin: 'users-without-wallets', requireUserPasswordOnCreate: false }) as any),
         },
         loginMethods: ['google', 'email', 'apple', 'wallet'],
       }}

@@ -1,6 +1,6 @@
 use anchor_lang::prelude::*;
 
-declare_id!("Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS");
+declare_id!("B3j3WKTsuHuBVeNbqcKX5wTyiPtnUGJ7ZpuCHctYPxwH");
 
 #[program]
 pub mod terrova {

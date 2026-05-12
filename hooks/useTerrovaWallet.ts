@@ -23,9 +23,11 @@ export function useTerrovaWallet(): TerrovaWallet {
   const solanaWalletAdapter = useWallet()
 
   // Get the primary Solana wallet from Privy (embedded or connected)
-  const privySolanaWallet = useMemo(() => 
-    privyWallets.find(w => w.walletClientType === "privy") || privyWallets[0] || null, 
-  [privyWallets])
+  const privySolanaWallet = useMemo(() => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const wallets = privyWallets as any[]
+    return wallets.find(w => w.walletClientType === "privy") || wallets[0] || null
+  }, [privyWallets])
 
   const publicKey = useMemo(() => {
     // Priority: 1. External Wallet Adapter, 2. Privy Wallet
@@ -57,7 +59,7 @@ export function useTerrovaWallet(): TerrovaWallet {
 
   const walletName = useMemo(() => {
     if (solanaWalletAdapter.wallet) return solanaWalletAdapter.wallet.adapter.name
-    if (privySolanaWallet) return privySolanaWallet.walletClientType === "privy" ? "Embedded Account" : privySolanaWallet.walletClientType
+    if (privySolanaWallet) return (privySolanaWallet as any).walletClientType === "privy" ? "Embedded Account" : ((privySolanaWallet as any).walletClientType ?? "Unknown")
     return null
   }, [solanaWalletAdapter.wallet, privySolanaWallet])
 

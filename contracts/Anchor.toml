@@ -6,18 +6,20 @@ skip-lint = false
 anchor_version = "0.32.1"
 
 [programs.localnet]
-terrova = "Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS"
+terrova = "B3j3WKTsuHuBVeNbqcKX5wTyiPtnUGJ7ZpuCHctYPxwH"
 
 [programs.devnet]
-terrova = "Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS"
+terrova = "B3j3WKTsuHuBVeNbqcKX5wTyiPtnUGJ7ZpuCHctYPxwH"
 
 [programs.mainnet]
-terrova = "Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS"
+terrova = "B3j3WKTsuHuBVeNbqcKX5wTyiPtnUGJ7ZpuCHctYPxwH"
 
 [registry]
 url = "https://api.apr.dev"
 
 [provider]
+# Change to "devnet" when deploying: anchor deploy --provider.cluster devnet
+# After deploy, update NEXT_PUBLIC_PROGRAM_ID in .env.local with the new program ID
 cluster = "localnet"
 wallet = "~/.config/solana/id.json"
 

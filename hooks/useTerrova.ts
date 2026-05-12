@@ -21,9 +21,9 @@ export function useTerrova() {
     }
 
     try {
-      const programIdStr = process.env.NEXT_PUBLIC_PROGRAM_ID || 'Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS';
+      const programIdStr =
+        process.env.NEXT_PUBLIC_PROGRAM_ID || 'B3j3WKTsuHuBVeNbqcKX5wTyiPtnUGJ7ZpuCHctYPxwH';
       const programId = new PublicKey(programIdStr);
-
       const terrovaClient = new TerrovaClient(connection, wallet, programId);
       setClient(terrovaClient);
       setIsInitialized(true);
@@ -38,11 +38,7 @@ export function useTerrova() {
 
   const registerNode = useCallback(
     async (latitude: number, longitude: number, coverageRadiusKm: number) => {
-      if (!client) {
-        setError('Terrova client not initialized');
-        return { success: false, error: 'Client not initialized' };
-      }
-
+      if (!client) return { success: false, error: 'Client not initialized' };
       try {
         const result = await client.registerNode(latitude, longitude, coverageRadiusKm);
         if (!result.success) {
@@ -50,8 +46,8 @@ export function useTerrova() {
         }
         return result;
       } catch (err) {
-        const errorMsg = err instanceof Error ? err.message : 'Unknown error';
-        setError(errorMsg);
+        const msg = err instanceof Error ? err.message : 'Unknown error';
+        setError(msg);
         return { success: false, error: err };
       }
     },
@@ -67,11 +63,7 @@ export function useTerrova() {
       longitude: number,
       weather: { temp: number; humidity: number; wind: number }
     ) => {
-      if (!client) {
-        setError('Terrova client not initialized');
-        return { success: false, error: 'Client not initialized' };
-      }
-
+      if (!client) return { success: false, error: 'Client not initialized' };
       try {
         const result = await client.submitEvidence(
           verificationRequestAddress,
@@ -86,8 +78,8 @@ export function useTerrova() {
         }
         return result;
       } catch (err) {
-        const errorMsg = err instanceof Error ? err.message : 'Unknown error';
-        setError(errorMsg);
+        const msg = err instanceof Error ? err.message : 'Unknown error';
+        setError(msg);
         return { success: false, error: err };
       }
     },
@@ -104,11 +96,7 @@ export function useTerrova() {
       requiredEvidence: number,
       deadlineSeconds: number
     ) => {
-      if (!client) {
-        setError('Terrova client not initialized');
-        return { success: false, error: 'Client not initialized' };
-      }
-
+      if (!client) return { success: false, error: 'Client not initialized' };
       try {
         const result = await client.createVerificationRequest(
           latitude,
@@ -120,12 +108,32 @@ export function useTerrova() {
           deadlineSeconds
         );
         if (!result.success) {
-          setError(result.error instanceof Error ? result.error.message : 'Request creation failed');
+          setError(
+            result.error instanceof Error ? result.error.message : 'Request creation failed'
+          );
         }
         return result;
       } catch (err) {
-        const errorMsg = err instanceof Error ? err.message : 'Unknown error';
-        setError(errorMsg);
+        const msg = err instanceof Error ? err.message : 'Unknown error';
+        setError(msg);
+        return { success: false, error: err };
+      }
+    },
+    [client]
+  );
+
+  const voteOnEvidence = useCallback(
+    async (evidencePda: PublicKey, voterNodePda: PublicKey, vote: boolean) => {
+      if (!client) return { success: false, error: 'Client not initialized' };
+      try {
+        const result = await client.voteOnEvidence(evidencePda, voterNodePda, vote);
+        if (!result.success) {
+          setError(result.error instanceof Error ? result.error.message : 'Vote failed');
+        }
+        return result;
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : 'Unknown error';
+        setError(msg);
         return { success: false, error: err };
       }
     },
@@ -133,11 +141,7 @@ export function useTerrova() {
   );
 
   const claimRewards = useCallback(async () => {
-    if (!client) {
-      setError('Terrova client not initialized');
-      return { success: false, error: 'Client not initialized' };
-    }
-
+    if (!client) return { success: false, error: 'Client not initialized' };
     try {
       const result = await client.claimRewards();
       if (!result.success) {
@@ -145,15 +149,13 @@ export function useTerrova() {
       }
       return result;
     } catch (err) {
-      const errorMsg = err instanceof Error ? err.message : 'Unknown error';
-      setError(errorMsg);
+      const msg = err instanceof Error ? err.message : 'Unknown error';
+      setError(msg);
       return { success: false, error: err };
     }
   }, [client]);
 
-  const clearError = useCallback(() => {
-    setError(null);
-  }, []);
+  const clearError = useCallback(() => setError(null), []);
 
   return {
     client,
@@ -163,6 +165,7 @@ export function useTerrova() {
     registerNode,
     submitEvidence,
     createVerificationRequest,
+    voteOnEvidence,
     claimRewards,
   };
 }

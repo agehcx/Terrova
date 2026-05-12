@@ -80,7 +80,7 @@ Go to **Rewards**. Once a verification you participated in is finalized, your ea
 
 The Terrova Anchor program is deployed on Solana Devnet.
 
-**Program ID:** `Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS`
+**Program ID:** `B3j3WKTsuHuBVeNbqcKX5wTyiPtnUGJ7ZpuCHctYPxwH`
 
 ### Instructions
 
@@ -113,7 +113,7 @@ Make sure `solana-test-validator` is installed. From the `contracts/` directory:
 ```bash
 # Start a local validator with the program loaded
 solana-test-validator \
-  --bpf-program Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS \
+  --bpf-program B3j3WKTsuHuBVeNbqcKX5wTyiPtnUGJ7ZpuCHctYPxwH \
   target/deploy/terrova.so \
   --reset &
 
