@@ -336,6 +336,7 @@ export default function EvidencePage() {
           </DialogContent>
         </Dialog>
       </div>
+      </div>
 
       {/* TX result banner */}
       {txResult && (

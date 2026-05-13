@@ -277,7 +277,8 @@ export function BlockchainProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     refreshData()
-  }, [refreshData])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isInitialized, publicKey])
 
   const registerNode = async (location: GeoLocation, radius: number) => {
     if (isInitialized && client) {
